@@ -5,7 +5,11 @@ SynEval is a comprehensive evaluation framework for assessing the quality of syn
 - **Fidelity**: Measures how well the synthetic data preserves the statistical properties and patterns of the original data
 - **Utility**: Evaluates the usefulness of synthetic data for downstream tasks
 - **Diversity**: Assesses the variety and uniqueness of the generated data
-- **Privacy**: Analyzes the privacy protection level of the synthetic data
+- **Privacy**: Analyzes the privacy protection level of the synthetic data with **two complementary metrics**:
+  - **Distinguishability AUC**: Measures how different synthetic data is from real data (fidelity indicator)
+  - **True Membership Inference Attack (MIA) AUC**: Measures whether the model memorized training data (privacy risk indicator)
+
+> **New!** SynEval now includes a true Membership Inference Attack to measure actual privacy leakage. See [PRIVACY_METRICS.md](PRIVACY_METRICS.md) for detailed documentation on interpreting both privacy metrics.
 
 ## Installation
 
@@ -645,7 +649,7 @@ Diversity assesses the variety and uniqueness of the generated data across multi
 SynEval includes some **default thresholds** as convenient alert levels, but acceptable risk varies across **domains, attack setups, and compliance standards**.  
 Thresholds are therefore **configurable**, and reports also include **baseline comparisons** and optional **uncertainty estimates** to support interpretation.
 
-- **Membership Inference (MIA):** Default alert at **AUC ≥ 0.70** (configurable). Motivation: if an attack under our default feature/attacker setting performs clearly better than random (AUC=0.50), users should review protection. However, AUC depends heavily on attacker strength, class imbalance, and evaluation protocol, so **0.70 is not a universal cut-off**. Always check ROC curves, Precision@k, permutation/random baselines, and confidence intervals. See recent MIA studies for context [[arXiv][1]].
+- **Synthetic vs Real Distinguishability:** We train a classifier to separate synthetic from original rows and report the ROC AUC. Values near **0.5** indicate the two distributions are hard to separate (good fidelity); values near **1.0** signal the synthetic data noticeably deviates from the source. This metric is *not* a membership inference attack—it measures fidelity rather than leakage. When the AUC is high, focus on closing the quality gap rather than assuming privacy failure. See [[arXiv][1]] for context on interpreting such scores.
 
 - **Exact Match (row-level duplicates):** Default alert at **>5%** (configurable). This is a **conservative heuristic**: in most non-templated domains, high identical duplication may indicate memorization. But some datasets (short reviews, limited vocab) naturally duplicate. Always compare with **original duplication rate**, **approximate matching**, and **Anonymeter risks (singling-out, linkability, inference)** before labeling it leakage [[arXiv][2]].
 
@@ -658,24 +662,19 @@ Thresholds are therefore **configurable**, and reports also include **baseline c
   - **Score Calculation**: (Matching rows) / (Total synthetic rows) × 100
   - **Interpretation with context**: Report also includes **original duplication rate** and **approximate matching** (edit distance, token Jaccard). This helps distinguish benign repetition from real leakage. Default alert threshold is 5% (configurable). See [arXiv][2].
 
-#### Membership Inference Attack
+#### Synthetic vs Real Distinguishability
 
-**Data Type**: Both structured and text data
+**Data Type**: Structured and text data
 
-- **MIA AUC Score**: Area under ROC curve for membership inference classifier (0-1 scale)
-
+- **Distinguishability AUC**: ROC-AUC score for a classifier that labels rows as synthetic (1) or real (0).
   - **Algorithm**:
-    1. Combine synthetic and original data with labels (1=synthetic, 0=original)
-    2. Extract features using TF-IDF for text and one-hot encoding for categorical
-    3. Train RandomForest classifier to distinguish between datasets
-    4. Calculate ROC-AUC score
-  - **Score Calculation**: sklearn.metrics.roc_auc_score
-  - **Risk Level**: High if AUC >0.7, Low otherwise
-
-- **Synthetic Confidence**: Average confidence of classifier on synthetic data
-  - **Algorithm**: Mean of classifier prediction probabilities for synthetic samples
-- **Original Confidence**: Average confidence of classifier on original data
-  - **Algorithm**: Mean of classifier prediction probabilities for original samples
+    1. Combine synthetic and original data with binary labels.
+    2. Encode features (TF-IDF for text, one-hot for categoricals, numeric passthrough).
+    3. Train a RandomForest classifier.
+    4. Compute ROC-AUC via `sklearn.metrics.roc_auc_score`.
+  - **Interpretation**: AUC ≈ 0.5 → synthetic data is statistically similar to real (high fidelity). AUC → 1.0 → the generator drifts from the real distribution; treat as a quality signal, not a privacy alarm.
+- **AUC-Derived Fidelity**: We also report `1 - AUC` to express similarity on a 0–1 scale (higher is better).
+- **Synthetic / Original Confidence**: Mean classifier probabilities for each cohort, revealing how confidently the discriminator separates them.
 
 #### Named Entity Recognition (for text data)
 

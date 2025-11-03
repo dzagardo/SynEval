@@ -520,24 +520,19 @@ class SynEvalPlotter:
                 ax1.text(0, match_percentage + 0.5, f'Risk: {risk_level.upper()}', 
                         ha='center', va='bottom', fontweight='bold')
             
-            # 2. Membership Inference Attack
+            # 2. Synthetic / Real Distinguishability
             if 'membership_inference' in privacy_results:
-                mia = privacy_results['membership_inference']
-                auc_score = mia.get('mia_auc_score', 0)
-                risk_level = mia.get('risk_level', 'unknown')
-                
-                color = 'red' if risk_level == 'high' else 'green'
-                ax2.bar(['MIA AUC Score'], [auc_score], color=color)
-                ax2.set_title('Membership Inference Attack')
-                ax2.set_ylabel('AUC Score')
+                distinguishability = privacy_results['membership_inference']
+                auc_score = distinguishability.get('distinguishability_auc', 0)
+                fidelity_score = distinguishability.get('fidelity_score', max(0, 1 - auc_score))
+
+                ax2.bar(['Distinguishability AUC', '1 - AUC (Fidelity)'], [auc_score, fidelity_score], color=['#ef4444', '#22c55e'])
+                ax2.set_title('Synthetic vs Real Separability')
+                ax2.set_ylabel('Score')
                 ax2.set_ylim(0, 1)
-                ax2.axhline(y=0.7, color='red', linestyle='--', alpha=0.7, label='High Risk Threshold')
-                ax2.legend()
                 ax2.grid(True, alpha=0.3)
-                
-                # Add risk level text
-                ax2.text(0, auc_score + 0.02, f'Risk: {risk_level.upper()}', 
-                        ha='center', va='bottom', fontweight='bold')
+                ax2.text(0, auc_score + 0.02, f'AUC: {auc_score:.3f}', ha='center', va='bottom', fontweight='bold')
+                ax2.text(1, fidelity_score + 0.02, f'Fidelity: {fidelity_score:.3f}', ha='center', va='bottom', fontweight='bold')
             
             # 3. Named Entity Analysis (if available)
             if 'named_entities' in privacy_results and 'error' not in privacy_results['named_entities']:

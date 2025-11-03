@@ -1,0 +1,24 @@
+{
+  "columns": {
+    "Open": {
+      "sdtype": "numerical"
+    },
+    "High": {
+      "sdtype": "numerical"
+    },
+    "Low": {
+      "sdtype": "numerical"
+    },
+    "Close": {
+      "sdtype": "numerical"
+    },
+    "Adj_Close": {
+      "sdtype": "numerical"
+    },
+    "Volume": {
+      "sdtype": "numerical"
+    }
+  },
+  "primary_key": null,
+  "METADATA_SPEC_VERSION": "1.0"
+}

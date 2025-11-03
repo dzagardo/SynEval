@@ -26,4 +26,11 @@ Thumbs.db
 *.log
 
 # Results
-*_results.json 
+*_results.json
+
+# Documentation drafts
+docs/
+
+# Experiment data artifacts
+experiments/data/
+experiments/data_adult/

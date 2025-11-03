@@ -1,0 +1,937 @@
+{
+  "fidelity": {
+    "diagnostic": {
+      "Data Validity": 0.4286,
+      "Data Structure": 1.0,
+      "Overall": {
+        "score": 0.7143
+      }
+    },
+    "quality": {
+      "Column Shapes": 0.3263,
+      "Column Pair Trends": 0.1343,
+      "Overall": {
+        "score": 0.2303
+      }
+    },
+    "text": {
+      "title": {
+        "length_stats": {
+          "original_mean": 20.537607521504302,
+          "original_std": 16.315550714448047,
+          "synthetic_mean": 18.803333333333335,
+          "synthetic_std": 5.8129703511400255
+        },
+        "word_count_stats": {
+          "original_mean": 3.836867373474695,
+          "original_std": 3.1608053207523605,
+          "synthetic_mean": 2.756666666666667,
+          "synthetic_std": 0.8944957411816984
+        },
+        "keyword_analysis": {
+          "original_top_keywords": {
+            "stars": 0.1496479276594322,
+            "great": 0.07679880526070956,
+            "love": 0.04997503853040659,
+            "nice": 0.04398707939004596,
+            "good": 0.03971121625330547,
+            "cute": 0.03761142614736404,
+            "quality": 0.029783206232524888,
+            "perfect": 0.02779950274021467,
+            "fit": 0.027007436740152695,
+            "small": 0.02648641973464678
+          },
+          "synthetic_top_keywords": {
+            "good": 0.03666666666666667,
+            "great": 0.030000000000000002,
+            "perfect": 0.013333333333333334,
+            "nice": 0.01,
+            "love": 0.006666666666666667,
+            "price": 0.006666666666666667,
+            "quality": 0.006666666666666667,
+            "pretty": 0.0033333333333333335,
+            "beautiful": 0.0,
+            "buy": 0.0
+          }
+        },
+        "sentiment_analysis": {
+          "original_mean": 0.27435424428333716,
+          "original_std": 0.3918429251040446,
+          "synthetic_mean": 0.11906030081030082,
+          "synthetic_std": 0.37110914459412925,
+          "original_sentiment_distribution": {
+            "negative": 8.15,
+            "neutral": 40.28,
+            "positive": 51.57000000000001
+          },
+          "synthetic_sentiment_distribution": {
+            "negative": 15.333333333333332,
+            "neutral": 49.333333333333336,
+            "positive": 35.333333333333336
+          }
+        }
+      },
+      "text": {
+        "length_stats": {
+          "original_mean": 142.25300120048018,
+          "original_std": 180.0758183826454,
+          "synthetic_mean": 233.37333333333333,
+          "synthetic_std": 65.31944110940508
+        },
+        "word_count_stats": {
+          "original_mean": 27.046918767507,
+          "original_std": 34.16608494091617,
+          "synthetic_mean": 40.48,
+          "synthetic_std": 9.997136713825434
+        },
+        "keyword_analysis": {
+          "original_top_keywords": {
+            "love": 0.09946021040153563,
+            "great": 0.09902599307291378,
+            "like": 0.07721838739442971,
+            "fit": 0.07204000251147712,
+            "good": 0.06515947822339414,
+            "nice": 0.06413060449328375,
+            "size": 0.05938139155469767,
+            "quality": 0.05857727153954169,
+            "just": 0.054632194631783516,
+            "cute": 0.05412467041639474
+          },
+          "synthetic_top_keywords": {
+            "really": 0.15173125688064198,
+            "like": 0.1512476136987983,
+            "great": 0.11708537356805065,
+            "just": 0.07882102086393145,
+            "good": 0.059297038688091136,
+            "love": 0.049543255963073206,
+            "quality": 0.028415280466916184,
+            "nice": 0.01697765512591307,
+            "perfect": 0.01298582389318665,
+            "size": 0.010840039061623605
+          }
+        },
+        "sentiment_analysis": {
+          "original_mean": 0.29970990322389923,
+          "original_std": 0.31867502149706944,
+          "synthetic_mean": 0.18690166792606278,
+          "synthetic_std": 0.22107685154087015,
+          "original_sentiment_distribution": {
+            "negative": 7.41,
+            "neutral": 21.07,
+            "positive": 71.52
+          },
+          "synthetic_sentiment_distribution": {
+            "negative": 7.333333333333333,
+            "neutral": 25.666666666666664,
+            "positive": 67.0
+          }
+        }
+      }
+    },
+    "numerical_statistics": {
+      "helpful_vote": {
+        "original_statistics": {
+          "count": 10000,
+          "mean": 0.5696,
+          "median": 0.0,
+          "std": 2.952393520984334,
+          "min": "0",
+          "max": "123",
+          "q25": 0.0,
+          "q75": 0.0,
+          "skewness": 20.666921567054903,
+          "kurtosis": 653.6304789259212
+        },
+        "synthetic_statistics": {
+          "count": 300,
+          "mean": 0.2633333333333333,
+          "median": 0.0,
+          "std": 1.8579996675918593,
+          "min": "0",
+          "max": "21",
+          "q25": 0.0,
+          "q75": 0.0,
+          "skewness": 8.548967016380058,
+          "kurtosis": 79.88617191981322
+        },
+        "relative_differences": {
+          "mean_diff": 0.5376872659176031,
+          "median_diff": 0,
+          "std_diff": 0.3706802110267474,
+          "skewness_diff": 12.117954550674845,
+          "kurtosis_diff": 573.744307006108
+        },
+        "range_coverage": 0.17073170731707318,
+        "distribution_similarity": {
+          "kl_divergence": "0.09142397",
+          "histogram_similarity": "0.9783666"
+        },
+        "overall_fidelity_score": 0.4481461687521568,
+        "fidelity_interpretation": "Very poor fidelity - synthetic data does not preserve original data characteristics"
+      }
+    }
+  },
+  "utility": {
+    "tstr_accuracy": {
+      "error": "can't convert cuda:0 device type tensor to numpy. Use Tensor.cpu() to copy the tensor to host memory first.",
+      "task_type": "classification",
+      "input_columns": [
+        "text"
+      ],
+      "output_columns": [
+        "rating"
+      ]
+    },
+    "correlation_analysis": {
+      "note": "Correlation analysis requires specific correlation types to be specified"
+    }
+  },
+  "diversity": {
+    "tabular_diversity": {
+      "coverage": {
+        "rating": 100.0,
+        "asin": 0.0,
+        "parent_asin": 0.0,
+        "user_id": 0.0,
+        "helpful_vote": 17.073170731707318
+      },
+      "uniqueness": {
+        "synthetic_duplicate_ratio": 0.0,
+        "original_duplicate_ratio": 0.0,
+        "relative_duplication": 0
+      },
+      "numerical_metrics": {
+        "helpful_vote": {
+          "statistical_differences": {
+            "mean_diff": 0.5376872658232057,
+            "std_diff": 0.3706802110141922,
+            "skew_diff": 12.117954550674845,
+            "kurtosis_diff": 573.744307006108
+          },
+          "range_coverage": 17.073170731707318,
+          "quartile_coverage": {
+            "q1": 100.0,
+            "q2": 100.0,
+            "q3": 100.0
+          },
+          "distribution_similarity": {
+            "kl_divergence": 0.2288630825545426,
+            "similarity_score": 79.54374353113093
+          },
+          "real_statistics": {
+            "mean": 0.5696,
+            "std": 2.952393520984334,
+            "skew": 20.666921567054903,
+            "kurtosis": 653.6304789259212,
+            "min": "0",
+            "max": "123"
+          },
+          "synthetic_statistics": {
+            "mean": 0.2633333333333333,
+            "std": 1.8579996675918593,
+            "skew": 8.548967016380058,
+            "kurtosis": 79.88617191981322,
+            "min": "0",
+            "max": "21"
+          }
+        }
+      },
+      "categorical_metrics": {
+        "rating": {
+          "category_coverage": 100.0,
+          "distribution_similarity": 62.660000000000004,
+          "entropy": {
+            "real": 1.8216277273008246,
+            "synthetic": 2.2580678285628606,
+            "difference": 0.43644010126203603
+          },
+          "top_categories_coverage": 100.0,
+          "rare_categories_coverage": 0,
+          "category_counts": {
+            "real": 5,
+            "synthetic": 5,
+            "common": 5
+          }
+        },
+        "asin": {
+          "category_coverage": 0.0,
+          "distribution_similarity": 4.574118861455645e-12,
+          "entropy": {
+            "real": 13.186425038456958,
+            "synthetic": 8.228818690495938,
+            "difference": 4.95760634796102
+          },
+          "top_categories_coverage": 0.0,
+          "rare_categories_coverage": 0.0,
+          "category_counts": {
+            "real": 9584,
+            "synthetic": 300,
+            "common": 0
+          }
+        },
+        "parent_asin": {
+          "category_coverage": 0.0,
+          "distribution_similarity": 4.4853010194856324e-12,
+          "entropy": {
+            "real": 13.091890554997393,
+            "synthetic": 8.228818690495938,
+            "difference": 4.863071864501455
+          },
+          "top_categories_coverage": 0.0,
+          "rare_categories_coverage": 0.0,
+          "category_counts": {
+            "real": 9294,
+            "synthetic": 300,
+            "common": 0
+          }
+        },
+        "user_id": {
+          "category_coverage": 0.0,
+          "distribution_similarity": 4.7628567756419216e-12,
+          "entropy": {
+            "real": 13.282712379548112,
+            "synthetic": 3.720692154559245,
+            "difference": 9.562020224988867
+          },
+          "top_categories_coverage": 0.0,
+          "rare_categories_coverage": 0.0,
+          "category_counts": {
+            "real": 9977,
+            "synthetic": 29,
+            "common": 0
+          }
+        }
+      },
+      "entropy_metrics": {
+        "column_entropy": {
+          "rating": {
+            "real": 1.8216277273008246,
+            "synthetic": 2.2580678285628606,
+            "entropy_ratio": 1.23958797650976,
+            "entropy_difference": 0.43644010126203603
+          },
+          "asin": {
+            "real": 13.186425038458244,
+            "synthetic": 8.228818690495883,
+            "entropy_ratio": 0.6240371189639426,
+            "entropy_difference": 4.957606347962361
+          },
+          "parent_asin": {
+            "real": 13.091890554998662,
+            "synthetic": 8.228818690495883,
+            "entropy_ratio": 0.6285431928921186,
+            "entropy_difference": 4.863071864502778
+          },
+          "user_id": {
+            "real": 13.282712379549444,
+            "synthetic": 3.7206921545592446,
+            "entropy_ratio": 0.28011538970457184,
+            "entropy_difference": 9.5620202249902
+          },
+          "helpful_vote": {
+            "real": 0.40046281183953103,
+            "synthetic": 0.28948960648058497,
+            "entropy_ratio": 0.7228876136551157,
+            "entropy_difference": 0.11097320535894606
+          }
+        },
+        "dataset_entropy": {
+          "real": 8.356623702429342,
+          "synthetic": 4.545177394118892,
+          "entropy_ratio": 0.5439011682126096
+        }
+      }
+    },
+    "text_diversity": {
+      "synthetic": {
+        "title": {
+          "lexical_diversity": {
+            "1-gram": {
+              "total": 662,
+              "unique": 360,
+              "unique_ratio": 0.5438066465256798,
+              "entropy": 8.15787648760082,
+              "normalized_entropy": 0.9606709389646408
+            },
+            "2-gram": {
+              "total": 362,
+              "unique": 324,
+              "unique_ratio": 0.8950276243093923,
+              "entropy": 8.266063592931006,
+              "normalized_entropy": 0.9911525495149078
+            },
+            "3-gram": {
+              "total": 101,
+              "unique": 98,
+              "unique_ratio": 0.9702970297029703,
+              "entropy": 6.598805542157719,
+              "normalized_entropy": 0.9975956160841071
+            },
+            "4-gram": {
+              "total": 8,
+              "unique": 7,
+              "unique_ratio": 0.875,
+              "entropy": 2.75,
+              "normalized_entropy": 0.979569764547061
+            },
+            "5-gram": {
+              "total": 0,
+              "unique": 0,
+              "unique_ratio": 0.0,
+              "entropy": 0.0,
+              "normalized_entropy": 0.0
+            },
+            "sample_size": 300
+          },
+          "semantic_diversity": {
+            "total_mst_weight": 154.162067356424,
+            "average_edge_weight": 0.5155921985164682,
+            "distinct_nodes": 275,
+            "distinct_ratio": 0.9166666666666666,
+            "sample_size": 300,
+            "device_used": "cpu"
+          },
+          "sentiment_diversity": {
+            "sentiment_by_rating": {
+              "1.0": 0.1111111111111111,
+              "2.0": 0.22413793103448276,
+              "3.0": 0.3148148148148148,
+              "4.0": 0.9782608695652174,
+              "5.0": 0.9666666666666667
+            },
+            "ideal_sentiment": {
+              "1.0": 0.0,
+              "2.0": 0.25,
+              "3.0": 0.5,
+              "4.0": 0.75,
+              "5.0": 1.0
+            },
+            "sentiment_alignment_score": 0.8832494863679271,
+            "sample_size": 300
+          }
+        },
+        "text": {
+          "lexical_diversity": {
+            "1-gram": {
+              "total": 329,
+              "unique": 254,
+              "unique_ratio": 0.7720364741641338,
+              "entropy": 7.820870009393787,
+              "normalized_entropy": 0.9789934533708348
+            },
+            "2-gram": {
+              "total": 279,
+              "unique": 278,
+              "unique_ratio": 0.996415770609319,
+              "entropy": 8.116952853047831,
+              "normalized_entropy": 0.9997551134245382
+            },
+            "3-gram": {
+              "total": 244,
+              "unique": 244,
+              "unique_ratio": 1.0,
+              "entropy": 7.930737337562843,
+              "normalized_entropy": 0.9999999999999946
+            },
+            "4-gram": {
+              "total": 218,
+              "unique": 218,
+              "unique_ratio": 1.0,
+              "entropy": 7.7681843247769145,
+              "normalized_entropy": 0.9999999999999986
+            },
+            "5-gram": {
+              "total": 194,
+              "unique": 194,
+              "unique_ratio": 1.0,
+              "entropy": 7.599912842187102,
+              "normalized_entropy": 0.9999999999999966
+            },
+            "sample_size": 50
+          },
+          "semantic_diversity": {
+            "total_mst_weight": 31.015087869408525,
+            "average_edge_weight": 0.6329609769267046,
+            "distinct_nodes": 41,
+            "distinct_ratio": 0.82,
+            "sample_size": 50,
+            "device_used": "cpu"
+          },
+          "sentiment_diversity": {
+            "sentiment_by_rating": {
+              "1.0": 0.0,
+              "2.0": 0.25,
+              "3.0": 0.23529411764705882,
+              "4.0": 1.0,
+              "5.0": 1.0
+            },
+            "ideal_sentiment": {
+              "1.0": 0.0,
+              "2.0": 0.25,
+              "3.0": 0.5,
+              "4.0": 0.75,
+              "5.0": 1.0
+            },
+            "sentiment_alignment_score": 0.8970588235294118,
+            "sample_size": 50
+          }
+        }
+      },
+      "real": {
+        "title": {
+          "lexical_diversity": {
+            "1-gram": {
+              "total": 662,
+              "unique": 360,
+              "unique_ratio": 0.5438066465256798,
+              "entropy": 8.15787648760082,
+              "normalized_entropy": 0.9606709389646408
+            },
+            "2-gram": {
+              "total": 362,
+              "unique": 324,
+              "unique_ratio": 0.8950276243093923,
+              "entropy": 8.266063592931006,
+              "normalized_entropy": 0.9911525495149078
+            },
+            "3-gram": {
+              "total": 101,
+              "unique": 98,
+              "unique_ratio": 0.9702970297029703,
+              "entropy": 6.598805542157719,
+              "normalized_entropy": 0.9975956160841071
+            },
+            "4-gram": {
+              "total": 8,
+              "unique": 7,
+              "unique_ratio": 0.875,
+              "entropy": 2.75,
+              "normalized_entropy": 0.979569764547061
+            },
+            "5-gram": {
+              "total": 0,
+              "unique": 0,
+              "unique_ratio": 0.0,
+              "entropy": 0.0,
+              "normalized_entropy": 0.0
+            },
+            "sample_size": 300
+          },
+          "semantic_diversity": {
+            "total_mst_weight": 154.162067356424,
+            "average_edge_weight": 0.5155921985164682,
+            "distinct_nodes": 275,
+            "distinct_ratio": 0.9166666666666666,
+            "sample_size": 300,
+            "device_used": "cpu"
+          },
+          "sentiment_diversity": {
+            "sentiment_by_rating": {
+              "1.0": 0.1111111111111111,
+              "2.0": 0.22413793103448276,
+              "3.0": 0.3148148148148148,
+              "4.0": 0.9782608695652174,
+              "5.0": 0.9666666666666667
+            },
+            "ideal_sentiment": {
+              "1.0": 0.0,
+              "2.0": 0.25,
+              "3.0": 0.5,
+              "4.0": 0.75,
+              "5.0": 1.0
+            },
+            "sentiment_alignment_score": 0.8832494863679271,
+            "sample_size": 300
+          }
+        },
+        "text": {
+          "lexical_diversity": {
+            "1-gram": {
+              "total": 329,
+              "unique": 254,
+              "unique_ratio": 0.7720364741641338,
+              "entropy": 7.820870009393787,
+              "normalized_entropy": 0.9789934533708348
+            },
+            "2-gram": {
+              "total": 279,
+              "unique": 278,
+              "unique_ratio": 0.996415770609319,
+              "entropy": 8.116952853047831,
+              "normalized_entropy": 0.9997551134245382
+            },
+            "3-gram": {
+              "total": 244,
+              "unique": 244,
+              "unique_ratio": 1.0,
+              "entropy": 7.930737337562843,
+              "normalized_entropy": 0.9999999999999946
+            },
+            "4-gram": {
+              "total": 218,
+              "unique": 218,
+              "unique_ratio": 1.0,
+              "entropy": 7.7681843247769145,
+              "normalized_entropy": 0.9999999999999986
+            },
+            "5-gram": {
+              "total": 194,
+              "unique": 194,
+              "unique_ratio": 1.0,
+              "entropy": 7.599912842187102,
+              "normalized_entropy": 0.9999999999999966
+            },
+            "sample_size": 50
+          },
+          "semantic_diversity": {
+            "total_mst_weight": 31.015087869408525,
+            "average_edge_weight": 0.6329609769267046,
+            "distinct_nodes": 41,
+            "distinct_ratio": 0.82,
+            "sample_size": 50,
+            "device_used": "cpu"
+          },
+          "sentiment_diversity": {
+            "sentiment_by_rating": {
+              "1.0": 0.0,
+              "2.0": 0.25,
+              "3.0": 0.23529411764705882,
+              "4.0": 1.0,
+              "5.0": 1.0
+            },
+            "ideal_sentiment": {
+              "1.0": 0.0,
+              "2.0": 0.25,
+              "3.0": 0.5,
+              "4.0": 0.75,
+              "5.0": 1.0
+            },
+            "sentiment_alignment_score": 0.8970588235294118,
+            "sample_size": 50
+          }
+        }
+      }
+    }
+  },
+  "privacy": {
+    "exact_matches": {
+      "exact_match_percentage": 0.0,
+      "risk_level": "low"
+    },
+    "membership_inference": {
+      "mia_auc_score": 1.0,
+      "synthetic_confidence": 0.8812333333333333,
+      "original_confidence": 0.0032770000000000004,
+      "risk_level": "high",
+      "explanation": "High risk: The model can easily distinguish between synthetic and real data. This suggests the synthetic data is not preserving the statistical properties of the real data well enough."
+    },
+    "pii_analysis": {
+      "text": {
+        "exact_match_percentage": 0.0,
+        "risk_level": "low"
+      },
+      "asin": {
+        "exact_match_percentage": 0.0,
+        "risk_level": "low"
+      },
+      "parent_asin": {
+        "exact_match_percentage": 0.0,
+        "risk_level": "low"
+      }
+    },
+    "structured_privacy_metrics": {
+      "IMS": {
+        "ims_syn_train": 0.0,
+        "train_test_ims": 1.0,
+        "passed": true,
+        "method": "Identical Match Share (IMS)",
+        "desc": "Synthetic-Train IMS: 0.0000, Train-Test IMS: 1.0000, Passed: Yes"
+      },
+      "DCR": {
+        "syn_train_5pct": 1156299553600.0,
+        "train_train_5pct": 469159.0,
+        "passed": "True",
+        "method": "Distance to Closest Records (DCR)",
+        "desc": "Synthetic-Train 5%: 1156299553600.0000, Train-Train 5%: 469159.0000, Passed: Yes"
+      },
+      "NNDR": {
+        "syn_train_5pct": 1.0039258313283637,
+        "train_train_5pct": 1.0529012904432848,
+        "passed": "False",
+        "method": "Nearest Neighbor Distance Ratio (NNDR)",
+        "desc": "Synthetic-Train 5%: 1.0039, Train-Train 5%: 1.0529, Passed: No"
+      }
+    },
+    "reidentification_risks": {
+      "singling_out_univariate": {
+        "attack_rate": 0.006321485612273018,
+        "baseline_rate": 0.009612675708191198,
+        "control_rate": 0.00756577931059882,
+        "risk": 0.0,
+        "error": null,
+        "warning": "Attack is not better than baseline model"
+      },
+      "singling_out_multivariate": {
+        "attack_rate": 0.01849674910349284,
+        "baseline_rate": 0.01849674910349284,
+        "control_rate": 0.01849674910349284,
+        "risk": 0.0,
+        "error": null,
+        "warning": "Attack is not better than baseline model"
+      },
+      "linkability": {
+        "attack_rate": 0.4628539039653344,
+        "baseline_rate": 0.3514156158613374,
+        "control_rate": 0.48142695198266716,
+        "risk": 0.0,
+        "error": null
+      },
+      "inference": [
+        {
+          "secret_column": "rating",
+          "attack_rate": 0.1436875943365847,
+          "baseline_rate": 0.19183791942623543,
+          "control_rate": 0.1436875943365847,
+          "risk": 0.0,
+          "error": null,
+          "warning": "Attack is not better than baseline model"
+        },
+        {
+          "secret_column": "title",
+          "attack_rate": 0.01849674910349284,
+          "baseline_rate": 0.01849674910349284,
+          "control_rate": 0.01849674910349284,
+          "risk": 0.0,
+          "error": null,
+          "warning": "Attack is not better than baseline model"
+        },
+        {
+          "secret_column": "text",
+          "attack_rate": 0.01849674910349284,
+          "baseline_rate": 0.01849674910349284,
+          "control_rate": 0.01849674910349284,
+          "risk": 0.0,
+          "error": null,
+          "warning": "Attack is not better than baseline model"
+        },
+        {
+          "secret_column": "asin",
+          "attack_rate": 0.01849674910349284,
+          "baseline_rate": 0.01849674910349284,
+          "control_rate": 0.01849674910349284,
+          "risk": 0.0,
+          "error": null,
+          "warning": "Attack is not better than baseline model"
+        },
+        {
+          "secret_column": "parent_asin",
+          "attack_rate": 0.01849674910349284,
+          "baseline_rate": 0.01849674910349284,
+          "control_rate": 0.01849674910349284,
+          "risk": 0.0,
+          "error": null,
+          "warning": "Attack is not better than baseline model"
+        },
+        {
+          "secret_column": "user_id",
+          "attack_rate": 0.01849674910349284,
+          "baseline_rate": 0.01849674910349284,
+          "control_rate": 0.01849674910349284,
+          "risk": 0.0,
+          "error": null,
+          "warning": "Attack is not better than baseline model"
+        },
+        {
+          "secret_column": "timestamp",
+          "attack_rate": 0.01849674910349284,
+          "baseline_rate": 0.01849674910349284,
+          "control_rate": 0.01849674910349284,
+          "risk": 0.0,
+          "error": null,
+          "warning": "Attack is not better than baseline model"
+        },
+        {
+          "secret_column": "helpful_vote",
+          "attack_rate": 0.7985320155558344,
+          "baseline_rate": 0.7792718855199742,
+          "control_rate": 0.7503816904661837,
+          "risk": 0.1928958063195587,
+          "error": null
+        },
+        {
+          "secret_column": "verified_purchase",
+          "attack_rate": 0.40369934982069855,
+          "baseline_rate": 0.6733411703227425,
+          "control_rate": 0.41332941483862873,
+          "risk": 0.0,
+          "error": null,
+          "warning": "Attack is not better than baseline model"
+        }
+      ],
+      "overall_risk": {
+        "risk_score": 0.1928958063195587,
+        "risk_level": "low",
+        "explanation": "Overall risk is determined by the highest risk score among all attacks."
+      }
+    },
+    "named_entities": {
+      "synthetic": {
+        "total_entities": 0,
+        "avg_entity_density": 0.0,
+        "risk_level": "low"
+      },
+      "original": {
+        "total_entities": 219,
+        "avg_entity_density": 0,
+        "risk_level": "low"
+      },
+      "overlap": {
+        "overlap_percentage": 0.0,
+        "risk_level": "low"
+      }
+    },
+    "nominal_mentions": {
+      "synthetic": {
+        "total_nominals": 18,
+        "avg_nominal_density": 0.020954598370197905,
+        "risk_level": "low"
+      },
+      "original": {
+        "total_nominals": 1424,
+        "avg_nominal_density": 0,
+        "risk_level": "low"
+      },
+      "overlap": {
+        "overlap_percentage": 0.35112359550561795,
+        "risk_level": "low"
+      }
+    },
+    "stylistic_outliers": {
+      "synthetic": {
+        "num_outliers": 5,
+        "outlier_percentage": 1.6666666666666667,
+        "risk_level": "low"
+      },
+      "original": {
+        "num_outliers": 148,
+        "outlier_percentage": 1.48,
+        "risk_level": "low"
+      },
+      "comparison": {
+        "outlier_ratio": 0.033783783783783786,
+        "risk_level": "low"
+      }
+    },
+    "anonymeter": {
+      "singling_out_univariate": {
+        "attack_rate": 0.022777436091863917,
+        "baseline_rate": 0.009612675708191198,
+        "control_rate": 0.008522912606917721,
+        "risk": 0.014377057892912083,
+        "error": null
+      },
+      "singling_out_multivariate": {
+        "attack_rate": 0.01849674910349284,
+        "baseline_rate": 0.01849674910349284,
+        "control_rate": 0.01849674910349284,
+        "risk": 0.0,
+        "error": null,
+        "warning": "Attack is not better than baseline model"
+      },
+      "linkability": {
+        "attack_rate": 0.6857304801733283,
+        "baseline_rate": 0.25855037577467327,
+        "control_rate": 0.6114382881039969,
+        "risk": 0.19119792247882456,
+        "error": null
+      },
+      "inference": [
+        {
+          "secret_column": "rating",
+          "attack_rate": 0.13405752931865456,
+          "baseline_rate": 0.20146798444416558,
+          "control_rate": 0.1244274643007244,
+          "risk": 0.0,
+          "error": null,
+          "warning": "Attack is not better than baseline model"
+        },
+        {
+          "secret_column": "title",
+          "attack_rate": 0.01849674910349284,
+          "baseline_rate": 0.01849674910349284,
+          "control_rate": 0.01849674910349284,
+          "risk": 0.0,
+          "error": null,
+          "warning": "Attack is not better than baseline model"
+        },
+        {
+          "secret_column": "text",
+          "attack_rate": 0.01849674910349284,
+          "baseline_rate": 0.01849674910349284,
+          "control_rate": 0.01849674910349284,
+          "risk": 0.0,
+          "error": null,
+          "warning": "Attack is not better than baseline model"
+        },
+        {
+          "secret_column": "asin",
+          "attack_rate": 0.01849674910349284,
+          "baseline_rate": 0.01849674910349284,
+          "control_rate": 0.01849674910349284,
+          "risk": 0.0,
+          "error": null,
+          "warning": "Attack is not better than baseline model"
+        },
+        {
+          "secret_column": "parent_asin",
+          "attack_rate": 0.01849674910349284,
+          "baseline_rate": 0.01849674910349284,
+          "control_rate": 0.01849674910349284,
+          "risk": 0.0,
+          "error": null,
+          "warning": "Attack is not better than baseline model"
+        },
+        {
+          "secret_column": "user_id",
+          "attack_rate": 0.01849674910349284,
+          "baseline_rate": 0.01849674910349284,
+          "control_rate": 0.01849674910349284,
+          "risk": 0.0,
+          "error": null,
+          "warning": "Attack is not better than baseline model"
+        },
+        {
+          "secret_column": "timestamp",
+          "attack_rate": 0.01849674910349284,
+          "baseline_rate": 0.01849674910349284,
+          "control_rate": 0.01849674910349284,
+          "risk": 0.0,
+          "error": null,
+          "warning": "Attack is not better than baseline model"
+        },
+        {
+          "secret_column": "helpful_vote",
+          "attack_rate": 0.8177921455916947,
+          "baseline_rate": 0.7889019505379042,
+          "control_rate": 0.8274222106096248,
+          "risk": 0.0,
+          "error": null
+        },
+        {
+          "secret_column": "verified_purchase",
+          "attack_rate": 0.46147973992827945,
+          "baseline_rate": 0.702231365376533,
+          "control_rate": 0.3844392197848383,
+          "risk": 0.0,
+          "error": null,
+          "warning": "Attack is not better than baseline model"
+        }
+      ],
+      "overall_risk": {
+        "risk_score": 0.19119792247882456,
+        "risk_level": "low",
+        "explanation": "Overall risk is determined by the highest risk score among all attacks."
+      }
+    }
+  }
+}

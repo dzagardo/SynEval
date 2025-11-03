@@ -1,0 +1,2017 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cross-Group DP Comparison</title>
+    
+    <!-- External Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #17a2b8;
+            --dark: #2d3436;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-tertiary: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f4f6f9;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Animated Wave Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="%23667eea" opacity="0.3"/></svg>') repeat-x;
+            animation: wave 10s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
+        }
+        
+        .wave:nth-of-type(2) {
+            bottom: 10px;
+            opacity: 0.5;
+            animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) -0.125s infinite;
+        }
+        
+        .wave:nth-of-type(3) {
+            bottom: 20px;
+            opacity: 0.2;
+            animation: wave 12s cubic-bezier(0.36, 0.45, 0.63, 0.53) 0.25s infinite;
+        }
+        
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-1200px); }
+        }
+        
+        /* Header */
+        .dashboard-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 4rem 0;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+        
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
+        }
+        
+        .group-count-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+        
+        /* Analysis Sections */
+        .analysis-section {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        .section-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            color: var(--primary);
+        }
+        
+        /* Overview Grid */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .group-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .group-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .group-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient-primary);
+        }
+        
+        .group-card.best::before {
+            background: var(--gradient-success);
+        }
+        
+        .group-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .group-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .stat-value {
+            font-weight: 700;
+            font-size: 1.125rem;
+        }
+        
+        /* Method Comparison Charts */
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+        
+        .chart-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f2f5;
+        }
+        
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .chart-subtitle {
+            color: #6c757d;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        /* Best Configuration Cards */
+        .best-config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .best-config-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .best-config-card:hover {
+            border-color: var(--primary);
+            transform: scale(1.02);
+        }
+        
+        .trophy-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .gold { color: #FFD700; }
+        .silver { color: #C0C0C0; }
+        .bronze { color: #CD7F32; }
+        
+        .config-metric {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+        
+        .config-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .config-details {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: #495057;
+        }
+        
+        /* Comparison Tables */
+        .comparison-matrix {
+            overflow-x: auto;
+        }
+        
+        .matrix-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .matrix-table thead {
+            background: var(--gradient-primary);
+            color: white;
+        }
+        
+        .matrix-table th {
+            padding: 1rem;
+            font-weight: 600;
+            text-align: center;
+            border: none;
+        }
+        
+        .matrix-table td {
+            padding: 1rem;
+            text-align: center;
+            background: white;
+            border: 1px solid #e9ecef;
+        }
+        
+        .matrix-table tbody tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        /* Score Cells */
+        .score-cell {
+            font-weight: 600;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+        
+        .score-excellent {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success);
+        }
+        
+        .score-good {
+            background: rgba(23, 162, 184, 0.1);
+            color: var(--info);
+        }
+        
+        .score-fair {
+            background: rgba(255, 193, 7, 0.1);
+            color: var(--warning);
+        }
+        
+        .score-poor {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--danger);
+        }
+        
+        /* Epsilon Tabs */
+        .epsilon-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .epsilon-tab {
+            padding: 0.75rem 1.5rem;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .epsilon-tab:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: var(--primary);
+        }
+        
+        .epsilon-tab.active {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: transparent;
+        }
+        
+        /* Insights & Recommendations */
+        .insight-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            border-left: 4px solid var(--primary);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .insight-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .insight-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .insight-title {
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 1.125rem;
+        }
+        
+        .insight-content {
+            color: #495057;
+            line-height: 1.6;
+        }
+        
+        /* Legend */
+        .legend-container {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .legend-color {
+            width: 30px;
+            height: 15px;
+            border-radius: 3px;
+        }
+        
+        /* Footer */
+        .dashboard-footer {
+            background: var(--dark);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .best-config-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .epsilon-tabs {
+                justify-content: center;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+    
+    <!-- Header -->
+    
+        <header class="dashboard-header">
+            <div class="container-fluid">
+                <div class="text-center">
+                    <h1 class="display-4 mb-3">
+                        <i class="fas fa-layer-group me-3"></i>
+                        Cross-Group DP Comparison
+                    </h1>
+                    <p class="lead mb-3">
+                        Comprehensive Cross-Group Performance Analysis
+                    </p>
+                    <div class="group-count-badge">
+                        <i class="fas fa-project-diagram"></i>
+                        <span>10 Methods Compared</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+    
+    <!-- Main Content -->
+    <main class="container-fluid my-4">
+        <!-- Overview Section -->
+        <div class="overview-grid">
+            <div class="group-card">
+                <div class="group-name">
+                    OUTPUT_GRID_ROW_DP_EXTREMA
+                    
+                </div>
+                <div class="group-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Experiments</span>
+                        <span class="stat-value">6</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Fidelity</span>
+                        <span class="stat-value" style="color: #28a745">
+                            73.7%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Utility</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            50.0%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Privacy</span>
+                        <span class="stat-value" style="color: #dc3545">
+                            37.2%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Overall Score</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            <strong>61.1%</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="group-card">
+                <div class="group-name">
+                    OUTPUT_GRID_ROW_DP_EXTREMA_LONG
+                    
+                </div>
+                <div class="group-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Experiments</span>
+                        <span class="stat-value">6</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Fidelity</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            55.9%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Utility</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            50.0%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Privacy</span>
+                        <span class="stat-value" style="color: #dc3545">
+                            39.3%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Overall Score</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            <strong>53.0%</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="group-card">
+                <div class="group-name">
+                    OUTPUT_GRID_ROW_TRUE_EXTREMA
+                    
+                </div>
+                <div class="group-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Experiments</span>
+                        <span class="stat-value">6</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Fidelity</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            59.3%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Utility</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            50.0%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Privacy</span>
+                        <span class="stat-value" style="color: #dc3545">
+                            39.2%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Overall Score</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            <strong>54.7%</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="group-card">
+                <div class="group-name">
+                    OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH
+                    
+                </div>
+                <div class="group-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Experiments</span>
+                        <span class="stat-value">6</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Fidelity</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            58.2%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Utility</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            50.0%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Privacy</span>
+                        <span class="stat-value" style="color: #dc3545">
+                            43.5%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Overall Score</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            <strong>55.2%</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="group-card">
+                <div class="group-name">
+                    OUTPUT_GRID_ROW_TRUE_EXTREMA_LONG
+                    
+                </div>
+                <div class="group-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Experiments</span>
+                        <span class="stat-value">6</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Fidelity</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            60.7%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Utility</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            50.0%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Privacy</span>
+                        <span class="stat-value" style="color: #dc3545">
+                            39.2%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Overall Score</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            <strong>54.5%</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="group-card">
+                <div class="group-name">
+                    OUTPUT_GRID_WINDOW_DP_EXTREMA
+                    
+                </div>
+                <div class="group-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Experiments</span>
+                        <span class="stat-value">6</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Fidelity</span>
+                        <span class="stat-value" style="color: #28a745">
+                            71.1%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Utility</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            50.0%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Privacy</span>
+                        <span class="stat-value" style="color: #dc3545">
+                            39.3%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Overall Score</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            <strong>61.0%</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="group-card">
+                <div class="group-name">
+                    OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG
+                    
+                </div>
+                <div class="group-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Experiments</span>
+                        <span class="stat-value">6</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Fidelity</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            68.9%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Utility</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            50.0%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Privacy</span>
+                        <span class="stat-value" style="color: #dc3545">
+                            39.3%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Overall Score</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            <strong>60.2%</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="group-card">
+                <div class="group-name">
+                    OUTPUT_GRID_WINDOW_TRUE_EXTREMA
+                    
+                </div>
+                <div class="group-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Experiments</span>
+                        <span class="stat-value">6</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Fidelity</span>
+                        <span class="stat-value" style="color: #28a745">
+                            72.4%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Utility</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            50.0%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Privacy</span>
+                        <span class="stat-value" style="color: #dc3545">
+                            39.2%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Overall Score</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            <strong>61.4%</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="group-card best">
+                <div class="group-name">
+                    OUTPUT_GRID_WINDOW_TRUE_EXTREMA_2_5_NORM_64_BATCH
+                     <i class="fas fa-crown text-warning ms-2"></i>
+                </div>
+                <div class="group-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Experiments</span>
+                        <span class="stat-value">6</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Fidelity</span>
+                        <span class="stat-value" style="color: #28a745">
+                            71.3%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Utility</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            50.0%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Privacy</span>
+                        <span class="stat-value" style="color: #dc3545">
+                            39.2%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Overall Score</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            <strong>61.4%</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="group-card">
+                <div class="group-name">
+                    OUTPUT_GRID_WINDOW_TRUE_EXTREMA_LONG
+                    
+                </div>
+                <div class="group-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Experiments</span>
+                        <span class="stat-value">6</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Fidelity</span>
+                        <span class="stat-value" style="color: #28a745">
+                            73.1%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Utility</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            50.0%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Privacy</span>
+                        <span class="stat-value" style="color: #dc3545">
+                            39.2%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Overall Score</span>
+                        <span class="stat-value" style="color: #ffc107">
+                            <strong>60.8%</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            </div>
+        
+        <!-- Method Comparison -->
+        <section class="analysis-section">
+            <h2 class="section-title">
+                <i class="fas fa-code-branch me-3"></i>
+                Method Comparison Across All Epsilons
+            </h2>
+            <div class="row">
+        <div class="col-12">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">Overall Performance Comparison</div>
+                    <div class="chart-subtitle">Average scores across all epsilon values</div>
+                </div>
+                <div id="overall-comparison-chart" style="height: 400px;"></div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">Privacy vs Utility Scatter</div>
+                    <div class="chart-subtitle">Each point represents a configuration</div>
+                </div>
+                <div id="privacy-utility-scatter" style="height: 400px;"></div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">Fidelity vs Diversity Scatter</div>
+                    <div class="chart-subtitle">Trade-offs between data quality metrics</div>
+                </div>
+                <div id="fidelity-diversity-scatter" style="height: 400px;"></div>
+            </div>
+        </div>
+        </div><div class="comparison-matrix mt-4"><table class="matrix-table"><thead><tr><th>Method</th><th>Epsilon</th><th>Fidelity</th><th>Utility</th><th>Privacy</th><th>Diversity</th><th>Overall</th></tr></thead><tbody><tr><td><strong>OUTPUT_GRID_ROW_DP_EXTREMA</strong></td><td>1</td><td class="score-cell score-fair">56.9%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.5%</td><td class="score-cell score-fair">53.8%</td><td class="score-cell score-fair"><strong>49.6%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_DP_EXTREMA</strong></td><td>10</td><td class="score-cell score-fair">59.1%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.2%</td><td class="score-cell score-good">72.8%</td><td class="score-cell score-fair"><strong>54.7%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_DP_EXTREMA</strong></td><td>100</td><td class="score-cell score-good">68.8%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">107.5%</td><td class="score-cell score-good"><strong>65.9%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_DP_EXTREMA</strong></td><td>1000</td><td class="score-cell score-good">73.7%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-good">72.5%</td><td class="score-cell score-fair"><strong>58.3%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_DP_EXTREMA</strong></td><td>10000</td><td class="score-cell score-excellent">89.1%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">100.3%</td><td class="score-cell score-good"><strong>69.1%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_DP_EXTREMA</strong></td><td>Inf</td><td class="score-cell score-excellent">94.7%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">93.0%</td><td class="score-cell score-good"><strong>68.7%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_DP_EXTREMA_LONG</strong></td><td>1</td><td class="score-cell score-fair">56.8%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.5%</td><td class="score-cell score-fair">52.8%</td><td class="score-cell score-fair"><strong>49.3%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_DP_EXTREMA_LONG</strong></td><td>10</td><td class="score-cell score-fair">58.1%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.2%</td><td class="score-cell score-good">65.0%</td><td class="score-cell score-fair"><strong>52.6%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_DP_EXTREMA_LONG</strong></td><td>100</td><td class="score-cell score-fair">57.2%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">110.7%</td><td class="score-cell score-good"><strong>63.8%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_DP_EXTREMA_LONG</strong></td><td>1000</td><td class="score-cell score-good">75.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-good">71.7%</td><td class="score-cell score-fair"><strong>58.4%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_DP_EXTREMA_LONG</strong></td><td>10000</td><td class="score-cell score-excellent">88.5%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">100.1%</td><td class="score-cell score-good"><strong>68.9%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_DP_EXTREMA_LONG</strong></td><td>Unknown</td><td class="score-cell score-poor">0.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">0.0%</td><td class="score-cell score-poor"><strong>25.0%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA</strong></td><td>1</td><td class="score-cell score-fair">56.7%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-fair">56.4%</td><td class="score-cell score-fair"><strong>50.0%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA</strong></td><td>10</td><td class="score-cell score-fair">59.7%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-good">78.2%</td><td class="score-cell score-fair"><strong>56.3%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA</strong></td><td>100</td><td class="score-cell score-good">72.3%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">105.6%</td><td class="score-cell score-good"><strong>66.3%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA</strong></td><td>1000</td><td class="score-cell score-good">76.9%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-good">79.7%</td><td class="score-cell score-good"><strong>60.9%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA</strong></td><td>10000</td><td class="score-cell score-excellent">90.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">100.7%</td><td class="score-cell score-good"><strong>69.5%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA</strong></td><td>Unknown</td><td class="score-cell score-poor">0.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">0.0%</td><td class="score-cell score-poor"><strong>25.0%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH</strong></td><td>1</td><td class="score-cell score-fair">56.6%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-good">62.5%</td><td class="score-cell score-fair">56.0%</td><td class="score-cell score-fair"><strong>56.3%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH</strong></td><td>10</td><td class="score-cell score-fair">58.6%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.2%</td><td class="score-cell score-good">70.5%</td><td class="score-cell score-fair"><strong>54.1%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH</strong></td><td>100</td><td class="score-cell score-good">69.2%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">109.1%</td><td class="score-cell score-good"><strong>66.4%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH</strong></td><td>1000</td><td class="score-cell score-good">75.9%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-good">76.2%</td><td class="score-cell score-fair"><strong>59.8%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH</strong></td><td>10000</td><td class="score-cell score-excellent">89.1%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">101.7%</td><td class="score-cell score-good"><strong>69.5%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH</strong></td><td>Unknown</td><td class="score-cell score-poor">0.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">0.0%</td><td class="score-cell score-poor"><strong>25.0%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA_LONG</strong></td><td>1</td><td class="score-cell score-fair">56.7%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-fair">55.7%</td><td class="score-cell score-fair"><strong>49.9%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA_LONG</strong></td><td>10</td><td class="score-cell score-fair">59.1%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-good">72.6%</td><td class="score-cell score-fair"><strong>54.7%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA_LONG</strong></td><td>100</td><td class="score-cell score-good">74.9%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">85.7%</td><td class="score-cell score-good"><strong>61.9%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA_LONG</strong></td><td>1000</td><td class="score-cell score-excellent">84.8%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">93.3%</td><td class="score-cell score-good"><strong>66.3%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA_LONG</strong></td><td>10000</td><td class="score-cell score-excellent">88.9%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">100.4%</td><td class="score-cell score-good"><strong>69.1%</strong></td></tr><tr><td><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA_LONG</strong></td><td>Unknown</td><td class="score-cell score-poor">0.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">0.0%</td><td class="score-cell score-poor"><strong>25.0%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_DP_EXTREMA</strong></td><td>1</td><td class="score-cell score-good">67.4%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.5%</td><td class="score-cell score-excellent">105.6%</td><td class="score-cell score-good"><strong>65.1%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_DP_EXTREMA</strong></td><td>10</td><td class="score-cell score-excellent">87.4%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.2%</td><td class="score-cell score-excellent">94.5%</td><td class="score-cell score-good"><strong>67.3%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_DP_EXTREMA</strong></td><td>100</td><td class="score-cell score-excellent">88.6%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">97.7%</td><td class="score-cell score-good"><strong>68.3%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_DP_EXTREMA</strong></td><td>1000</td><td class="score-cell score-excellent">91.8%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">102.9%</td><td class="score-cell score-good"><strong>70.4%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_DP_EXTREMA</strong></td><td>10000</td><td class="score-cell score-excellent">91.6%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">100.9%</td><td class="score-cell score-good"><strong>69.9%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_DP_EXTREMA</strong></td><td>Unknown</td><td class="score-cell score-poor">0.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">0.0%</td><td class="score-cell score-poor"><strong>25.0%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG</strong></td><td>1</td><td class="score-cell score-good">60.1%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.5%</td><td class="score-cell score-excellent">109.0%</td><td class="score-cell score-good"><strong>64.1%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG</strong></td><td>10</td><td class="score-cell score-excellent">82.9%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.2%</td><td class="score-cell score-excellent">84.5%</td><td class="score-cell score-good"><strong>63.6%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG</strong></td><td>100</td><td class="score-cell score-excellent">87.4%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">97.1%</td><td class="score-cell score-good"><strong>67.9%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG</strong></td><td>1000</td><td class="score-cell score-excellent">91.8%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">101.5%</td><td class="score-cell score-good"><strong>70.1%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG</strong></td><td>10000</td><td class="score-cell score-excellent">91.5%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">103.3%</td><td class="score-cell score-good"><strong>70.4%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG</strong></td><td>Unknown</td><td class="score-cell score-poor">0.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">0.0%</td><td class="score-cell score-poor"><strong>25.0%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA</strong></td><td>1</td><td class="score-cell score-good">73.2%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">101.3%</td><td class="score-cell score-good"><strong>65.4%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA</strong></td><td>10</td><td class="score-cell score-excellent">87.6%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">99.2%</td><td class="score-cell score-good"><strong>68.5%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA</strong></td><td>100</td><td class="score-cell score-excellent">89.8%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">100.5%</td><td class="score-cell score-good"><strong>69.4%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA</strong></td><td>1000</td><td class="score-cell score-excellent">91.7%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">103.2%</td><td class="score-cell score-good"><strong>70.5%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA</strong></td><td>10000</td><td class="score-cell score-excellent">92.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">100.1%</td><td class="score-cell score-good"><strong>69.8%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA</strong></td><td>Unknown</td><td class="score-cell score-poor">0.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">0.0%</td><td class="score-cell score-poor"><strong>25.0%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA_2_5_NORM_64_BATCH</strong></td><td>1</td><td class="score-cell score-good">72.1%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">107.0%</td><td class="score-cell score-good"><strong>66.6%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA_2_5_NORM_64_BATCH</strong></td><td>10</td><td class="score-cell score-excellent">87.4%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">96.3%</td><td class="score-cell score-good"><strong>67.7%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA_2_5_NORM_64_BATCH</strong></td><td>100</td><td class="score-cell score-excellent">88.1%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">101.8%</td><td class="score-cell score-good"><strong>69.2%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA_2_5_NORM_64_BATCH</strong></td><td>1000</td><td class="score-cell score-excellent">89.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">103.1%</td><td class="score-cell score-good"><strong>69.8%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA_2_5_NORM_64_BATCH</strong></td><td>10000</td><td class="score-cell score-excellent">91.2%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">103.4%</td><td class="score-cell score-good"><strong>70.4%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA_2_5_NORM_64_BATCH</strong></td><td>Unknown</td><td class="score-cell score-poor">0.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">0.0%</td><td class="score-cell score-poor"><strong>25.0%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA_LONG</strong></td><td>1</td><td class="score-cell score-good">77.4%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">84.7%</td><td class="score-cell score-good"><strong>62.3%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA_LONG</strong></td><td>10</td><td class="score-cell score-excellent">88.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">99.6%</td><td class="score-cell score-good"><strong>68.7%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA_LONG</strong></td><td>100</td><td class="score-cell score-excellent">89.6%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">100.6%</td><td class="score-cell score-good"><strong>69.3%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA_LONG</strong></td><td>1000</td><td class="score-cell score-excellent">91.8%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">101.7%</td><td class="score-cell score-good"><strong>70.1%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA_LONG</strong></td><td>10000</td><td class="score-cell score-excellent">91.6%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">37.1%</td><td class="score-cell score-excellent">99.8%</td><td class="score-cell score-good"><strong>69.6%</strong></td></tr><tr><td><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA_LONG</strong></td><td>Unknown</td><td class="score-cell score-poor">0.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-fair">50.0%</td><td class="score-cell score-poor">0.0%</td><td class="score-cell score-poor"><strong>25.0%</strong></td></tr></tbody></table></div>
+        </section>
+        
+        <!-- Epsilon-specific Analysis -->
+        <section class="analysis-section">
+            <h2 class="section-title">
+                <i class="fas fa-sliders-h me-3"></i>
+                Epsilon-Specific Performance
+            </h2>
+            <div class="epsilon-tabs"><div class="epsilon-tab active" data-epsilon="1">ε = 1</div><div class="epsilon-tab " data-epsilon="10">ε = 10</div><div class="epsilon-tab " data-epsilon="100">ε = 100</div><div class="epsilon-tab " data-epsilon="1000">ε = 1000</div><div class="epsilon-tab " data-epsilon="10000">ε = 10000</div><div class="epsilon-tab " data-epsilon="Inf">ε = Inf</div><div class="epsilon-tab " data-epsilon="Unknown">ε = Unknown</div></div><div id="epsilon-specific-charts"><div class="row">
+        <div class="col-lg-12">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">Performance at Selected Epsilon</div>
+                    <div class="chart-subtitle">Comparing all methods at the same privacy budget</div>
+                </div>
+                <div id="epsilon-performance-chart" style="height: 400px;"></div>
+            </div>
+        </div>
+        </div></div>
+        </section>
+        
+        <!-- Best Configurations -->
+        <section class="analysis-section">
+            <h2 class="section-title">
+                <i class="fas fa-trophy me-3"></i>
+                Best Configurations
+            </h2>
+            <div class="best-config-grid">
+            <div class="best-config-card">
+                <div class="trophy-icon gold">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="config-metric">Best Overall</div>
+                <div class="config-value">70.5%</div>
+                <div class="config-details">
+                    <strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA</strong><br>
+                    ε = 1000
+                </div>
+            </div>
+            
+            <div class="best-config-card">
+                <div class="trophy-icon silver">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="config-metric">Best Privacy</div>
+                <div class="config-value">62.5%</div>
+                <div class="config-details">
+                    <strong>OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH</strong><br>
+                    ε = 1
+                </div>
+            </div>
+            
+            <div class="best-config-card">
+                <div class="trophy-icon bronze">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div class="config-metric">Best Utility</div>
+                <div class="config-value">50.0%</div>
+                <div class="config-details">
+                    <strong>OUTPUT_GRID_ROW_DP_EXTREMA</strong><br>
+                    ε = 1
+                </div>
+            </div>
+            
+            <div class="best-config-card">
+                <div class="trophy-icon bronze">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="config-metric">Best Fidelity</div>
+                <div class="config-value">94.7%</div>
+                <div class="config-details">
+                    <strong>OUTPUT_GRID_ROW_DP_EXTREMA</strong><br>
+                    ε = Inf
+                </div>
+            </div>
+            </div>
+        </section>
+        
+        <!-- Tradeoff Analysis -->
+        <section class="analysis-section">
+            <h2 class="section-title">
+                <i class="fas fa-balance-scale-right me-3"></i>
+                Privacy-Utility Tradeoff Analysis
+            </h2>
+            <div class="row">
+        <div class="col-lg-12">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">Privacy-Utility Pareto Frontier</div>
+                    <div class="chart-subtitle">Optimal configurations across all methods</div>
+                </div>
+                <div id="pareto-frontier-chart" style="height: 500px;"></div>
+            </div>
+        </div>
+        
+        <div class="col-lg-12">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">Method-Specific Tradeoff Curves</div>
+                    <div class="chart-subtitle">How each method handles the privacy-utility balance</div>
+                </div>
+                <div id="method-tradeoff-curves" style="height: 500px;"></div>
+            </div>
+        </div>
+        </div>
+        </section>
+        
+        <!-- Recommendations -->
+        <section class="analysis-section">
+            <h2 class="section-title">
+                <i class="fas fa-lightbulb me-3"></i>
+                Insights & Recommendations
+            </h2>
+            
+            <div class="insight-card">
+                <div class="insight-header">
+                    <div class="insight-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="insight-title">Best Overall Method</div>
+                </div>
+                <div class="insight-content">
+                    <strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA_2_5_NORM_64_BATCH</strong> achieves the best overall performance with an average score of 61.4% across all epsilon values. This method provides the most balanced trade-off between all metrics.
+                </div>
+            </div>
+            
+            <div class="insight-card">
+                <div class="insight-header">
+                    <div class="insight-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <div class="insight-title">Optimal Privacy-Utility Balance</div>
+                </div>
+                <div class="insight-content">
+                    The optimal privacy-utility balance is achieved by <strong>OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH</strong> at ε=1, with 62.5% privacy and 50.0% utility.
+                </div>
+            </div>
+            
+            <div class="insight-card">
+                <div class="insight-header">
+                    <div class="insight-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="insight-title">Method Strengths</div>
+                </div>
+                <div class="insight-content">
+                    <strong>OUTPUT_GRID_ROW_DP_EXTREMA</strong>: Excels at diversity (83.3%)<br><strong>OUTPUT_GRID_ROW_DP_EXTREMA_LONG</strong>: Excels at diversity (66.7%)<br><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA</strong>: Excels at diversity (70.1%)<br><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH</strong>: Excels at diversity (68.9%)<br><strong>OUTPUT_GRID_ROW_TRUE_EXTREMA_LONG</strong>: Excels at diversity (68.0%)<br><strong>OUTPUT_GRID_WINDOW_DP_EXTREMA</strong>: Excels at diversity (83.6%)<br><strong>OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG</strong>: Excels at diversity (82.5%)<br><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA</strong>: Excels at diversity (84.1%)<br><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA_2_5_NORM_64_BATCH</strong>: Excels at diversity (85.3%)<br><strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA_LONG</strong>: Excels at diversity (81.1%)
+                </div>
+            </div>
+            
+            <div class="insight-card">
+                <div class="insight-header">
+                    <div class="insight-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="insight-title">Recommendation</div>
+                </div>
+                <div class="insight-content">
+                    
+            For most use cases, we recommend <strong>OUTPUT_GRID_WINDOW_TRUE_EXTREMA</strong> with ε=1000, 
+            which achieves the best overall score of 70.5%. 
+            This configuration provides a good balance across all evaluation metrics.
+            For specific requirements (maximum privacy, highest utility, etc.), 
+            refer to the best configurations section above.
+            
+                </div>
+            </div>
+            
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0">
+                        <i class="fas fa-layer-group me-2"></i>
+                        Cross-Group DP Comparison
+                        <span class="mx-2">•</span>
+                        Generated October 24, 2025 at 09:38 PM
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const groupColors = ['#667eea', '#f093fb', '#4facfe', '#43e97b', '#fa709a', '#30cfd0', '#764ba2', '#f5576c', '#00f2fe', '#38f9d7'];
+            const groupNames = ['OUTPUT_GRID_ROW_DP_EXTREMA', 'OUTPUT_GRID_ROW_DP_EXTREMA_LONG', 'OUTPUT_GRID_ROW_TRUE_EXTREMA', 'OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH', 'OUTPUT_GRID_ROW_TRUE_EXTREMA_LONG', 'OUTPUT_GRID_WINDOW_DP_EXTREMA', 'OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG', 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA', 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA_2_5_NORM_64_BATCH', 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA_LONG'];
+            
+            // Overall Comparison Chart
+            var overallData = [
+                {
+                    x: groupNames,
+                    y: [73.71, 55.935, 59.28333333333334, 58.23499999999999, 60.74166666666665, 71.12833333333333, 68.94166666666666, 72.385, 71.29666666666667, 73.06833333333334],
+                    name: 'Fidelity',
+                    type: 'bar',
+                    marker: {color: 'rgba(102, 126, 234, 0.8)'}
+                },
+                {
+                    x: groupNames,
+                    y: [50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0],
+                    name: 'Utility',
+                    type: 'bar',
+                    marker: {color: 'rgba(23, 162, 184, 0.8)'}
+                },
+                {
+                    x: groupNames,
+                    y: [37.174590163934425, 39.32775500910747, 39.23417577413479, 43.48062386156649, 39.23417577413479, 39.32775500910747, 39.32775500910747, 39.23417577413479, 39.23417577413479, 39.23417577413479],
+                    name: 'Privacy',
+                    type: 'bar',
+                    marker: {color: 'rgba(40, 167, 69, 0.8)'}
+                },
+                {
+                    x: groupNames,
+                    y: [83.31975985073537, 66.72806961458446, 70.10025456630183, 68.91270983935073, 67.95671582877172, 83.59954341707947, 82.54337020117357, 84.05428317365993, 85.2500847496883, 81.06352200598701],
+                    name: 'Diversity',
+                    type: 'bar',
+                    marker: {color: 'rgba(255, 193, 7, 0.8)'}
+                },
+                {
+                    x: groupNames,
+                    y: [61.05108750366745, 52.99770615592298, 54.65444091844248, 55.1570834252293, 54.483139567393295, 61.01390793988006, 60.203197969236925, 61.41836473694868, 61.44523179762245, 60.84150777836379],
+                    name: 'Overall',
+                    type: 'bar',
+                    marker: {color: 'rgba(220, 53, 69, 0.8)'}
+                }
+            ];
+            
+            var overallLayout = {
+                barmode: 'group',
+                yaxis: {title: 'Score (%)', range: [0, 105]},
+                xaxis: {title: 'Method'},
+                hovermode: 'x unified',
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'rgba(0,0,0,0.02)',
+                font: {family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'}
+            };
+            
+            Plotly.newPlot('overall-comparison-chart', overallData, overallLayout, {responsive: true});
+            
+            // Scatter Plots
+            
+        // Privacy vs Utility Scatter
+        var privacyUtilityData = [];
+        
+            privacyUtilityData.push({
+                x: [37.54139344262295, 37.169808743169405, 37.09330601092896, 37.08101092896175, 37.08101092896175, 37.08101092896175],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_ROW_DP_EXTREMA',
+                text: ['1', '10', '100', '1000', '10000', 'Inf'],
+                marker: {
+                    size: 10,
+                    color: groupColors[0]
+                },
+                line: {
+                    color: groupColors[0],
+                    width: 2
+                }
+            });
+            
+            privacyUtilityData.push({
+                x: [37.54139344262295, 37.169808743169405, 37.09330601092896, 37.08101092896175, 37.08101092896175, 50.0],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_ROW_DP_EXTREMA_LONG',
+                text: ['1', '10', '100', '1000', '10000', 'Unknown'],
+                marker: {
+                    size: 10,
+                    color: groupColors[1]
+                },
+                line: {
+                    color: groupColors[1],
+                    width: 2
+                }
+            });
+            
+            privacyUtilityData.push({
+                x: [37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 50.0],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_ROW_TRUE_EXTREMA',
+                text: ['1', '10', '100', '1000', '10000', 'Unknown'],
+                marker: {
+                    size: 10,
+                    color: groupColors[2]
+                },
+                line: {
+                    color: groupColors[2],
+                    width: 2
+                }
+            });
+            
+            privacyUtilityData.push({
+                x: [62.45860655737705, 37.169808743169405, 37.09330601092896, 37.08101092896175, 37.08101092896175, 50.0],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH',
+                text: ['1', '10', '100', '1000', '10000', 'Unknown'],
+                marker: {
+                    size: 10,
+                    color: groupColors[3]
+                },
+                line: {
+                    color: groupColors[3],
+                    width: 2
+                }
+            });
+            
+            privacyUtilityData.push({
+                x: [37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 50.0],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_ROW_TRUE_EXTREMA_LONG',
+                text: ['1', '10', '100', '1000', '10000', 'Unknown'],
+                marker: {
+                    size: 10,
+                    color: groupColors[4]
+                },
+                line: {
+                    color: groupColors[4],
+                    width: 2
+                }
+            });
+            
+            privacyUtilityData.push({
+                x: [37.54139344262295, 37.169808743169405, 37.09330601092896, 37.08101092896175, 37.08101092896175, 50.0],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_WINDOW_DP_EXTREMA',
+                text: ['1', '10', '100', '1000', '10000', 'Unknown'],
+                marker: {
+                    size: 10,
+                    color: groupColors[5]
+                },
+                line: {
+                    color: groupColors[5],
+                    width: 2
+                }
+            });
+            
+            privacyUtilityData.push({
+                x: [37.54139344262295, 37.169808743169405, 37.09330601092896, 37.08101092896175, 37.08101092896175, 50.0],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG',
+                text: ['1', '10', '100', '1000', '10000', 'Unknown'],
+                marker: {
+                    size: 10,
+                    color: groupColors[6]
+                },
+                line: {
+                    color: groupColors[6],
+                    width: 2
+                }
+            });
+            
+            privacyUtilityData.push({
+                x: [37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 50.0],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA',
+                text: ['1', '10', '100', '1000', '10000', 'Unknown'],
+                marker: {
+                    size: 10,
+                    color: groupColors[7]
+                },
+                line: {
+                    color: groupColors[7],
+                    width: 2
+                }
+            });
+            
+            privacyUtilityData.push({
+                x: [37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 50.0],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA_2_5_NORM_64_BATCH',
+                text: ['1', '10', '100', '1000', '10000', 'Unknown'],
+                marker: {
+                    size: 10,
+                    color: groupColors[8]
+                },
+                line: {
+                    color: groupColors[8],
+                    width: 2
+                }
+            });
+            
+            privacyUtilityData.push({
+                x: [37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 50.0],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA_LONG',
+                text: ['1', '10', '100', '1000', '10000', 'Unknown'],
+                marker: {
+                    size: 10,
+                    color: groupColors[9]
+                },
+                line: {
+                    color: groupColors[9],
+                    width: 2
+                }
+            });
+            
+        var scatterLayout = {
+            xaxis: {title: 'Privacy Score (%)'},
+            yaxis: {title: 'Utility Score (%)'},
+            hovermode: 'closest',
+            paper_bgcolor: 'transparent',
+            plot_bgcolor: 'rgba(0,0,0,0.02)',
+            font: {family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'}
+        };
+        
+        Plotly.newPlot('privacy-utility-scatter', privacyUtilityData, scatterLayout, {responsive: true});
+        
+        // Fidelity vs Diversity Scatter
+        var fidelityDiversityData = [];
+        
+            fidelityDiversityData.push({
+                x: [56.88999999999999, 59.050000000000004, 68.82000000000001, 73.72999999999999, 89.11, 94.66],
+                y: [53.77342897660557, 72.75087895091286, 107.53451888303547, 72.52988657598476, 100.33269566868009, 92.99715004919348],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_ROW_DP_EXTREMA',
+                marker: {
+                    size: 10,
+                    color: groupColors[0]
+                },
+                line: {
+                    color: groupColors[0],
+                    width: 2
+                }
+            });
+            
+            fidelityDiversityData.push({
+                x: [56.830000000000005, 58.07, 57.21000000000001, 74.95, 88.55, 0],
+                y: [52.839152867254235, 64.99711711230118, 110.70597703801862, 71.72460651924743, 100.10156415068525, 0],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_ROW_DP_EXTREMA_LONG',
+                marker: {
+                    size: 10,
+                    color: groupColors[1]
+                },
+                line: {
+                    color: groupColors[1],
+                    width: 2
+                }
+            });
+            
+            fidelityDiversityData.push({
+                x: [56.730000000000004, 59.709999999999994, 72.33000000000001, 76.88000000000001, 90.05, 0],
+                y: [56.35132256318196, 78.21651473419175, 105.64975826003827, 79.67739229876416, 100.70653954163484, 0],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_ROW_TRUE_EXTREMA',
+                marker: {
+                    size: 10,
+                    color: groupColors[2]
+                },
+                line: {
+                    color: groupColors[2],
+                    width: 2
+                }
+            });
+            
+            fidelityDiversityData.push({
+                x: [56.599999999999994, 58.599999999999994, 69.25, 75.87, 89.09, 0],
+                y: [56.02947746009501, 70.46551016848449, 109.06456735875332, 76.20271734793987, 101.71398670083163, 0],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH',
+                marker: {
+                    size: 10,
+                    color: groupColors[3]
+                },
+                line: {
+                    color: groupColors[3],
+                    width: 2
+                }
+            });
+            
+            fidelityDiversityData.push({
+                x: [56.730000000000004, 59.11, 74.91, 84.78999999999999, 88.91, 0],
+                y: [55.697821145454775, 72.60779803895679, 85.67701949773759, 93.31919681993509, 100.43845947054606, 0],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_ROW_TRUE_EXTREMA_LONG',
+                marker: {
+                    size: 10,
+                    color: groupColors[4]
+                },
+                line: {
+                    color: groupColors[4],
+                    width: 2
+                }
+            });
+            
+            fidelityDiversityData.push({
+                x: [67.42, 87.41, 88.56, 91.77, 91.61, 0],
+                y: [105.58744656426448, 94.48286521749598, 97.74539217140551, 102.90081796058249, 100.88073858872836, 0],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_WINDOW_DP_EXTREMA',
+                marker: {
+                    size: 10,
+                    color: groupColors[5]
+                },
+                line: {
+                    color: groupColors[5],
+                    width: 2
+                }
+            });
+            
+            fidelityDiversityData.push({
+                x: [60.050000000000004, 82.89999999999999, 87.42999999999999, 91.82000000000001, 91.45, 0],
+                y: [108.98705819078529, 84.46516296556258, 97.06272409956526, 101.48444929200295, 103.26082665912533, 0],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG',
+                marker: {
+                    size: 10,
+                    color: groupColors[6]
+                },
+                line: {
+                    color: groupColors[6],
+                    width: 2
+                }
+            });
+            
+            fidelityDiversityData.push({
+                x: [73.18, 87.57000000000001, 89.83, 91.69, 92.04, 0],
+                y: [101.26226818301052, 99.20078789867924, 100.53998403373554, 103.20774950050094, 100.1149094260333, 0],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA',
+                marker: {
+                    size: 10,
+                    color: groupColors[7]
+                },
+                line: {
+                    color: groupColors[7],
+                    width: 2
+                }
+            });
+            
+            fidelityDiversityData.push({
+                x: [72.09, 87.4, 88.12, 89.01, 91.16, 0],
+                y: [107.03227769027637, 96.25137523172165, 101.78286103311682, 103.0624594920258, 103.37153505098912, 0],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA_2_5_NORM_64_BATCH',
+                marker: {
+                    size: 10,
+                    color: groupColors[8]
+                },
+                line: {
+                    color: groupColors[8],
+                    width: 2
+                }
+            });
+            
+            fidelityDiversityData.push({
+                x: [77.41, 87.98, 89.61, 91.81, 91.60000000000001, 0],
+                y: [84.71716391600032, 99.63658614750884, 100.59584658403418, 101.68039856060464, 99.75113682777405, 0],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA_LONG',
+                marker: {
+                    size: 10,
+                    color: groupColors[9]
+                },
+                line: {
+                    color: groupColors[9],
+                    width: 2
+                }
+            });
+            
+        var fidelityDiversityLayout = {
+            xaxis: {title: 'Fidelity Score (%)'},
+            yaxis: {title: 'Diversity Score (%)'},
+            hovermode: 'closest',
+            paper_bgcolor: 'transparent',
+            plot_bgcolor: 'rgba(0,0,0,0.02)',
+            font: {family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'}
+        };
+        
+        Plotly.newPlot('fidelity-diversity-scatter', fidelityDiversityData, fidelityDiversityLayout, {responsive: true});
+        
+            
+            // Epsilon-specific charts
+            
+        const epsilonData = {};
+        
+            epsilonData['Inf'] = {
+                groups: ['OUTPUT_GRID_ROW_DP_EXTREMA'],
+                fidelity: [94.66],
+                utility: [50],
+                privacy: [37.08101092896175],
+                diversity: [92.99715004919348],
+                overall: [68.68454024453881]
+            };
+            
+            epsilonData['1'] = {
+                groups: ['OUTPUT_GRID_ROW_DP_EXTREMA', 'OUTPUT_GRID_ROW_DP_EXTREMA_LONG', 'OUTPUT_GRID_ROW_TRUE_EXTREMA', 'OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH', 'OUTPUT_GRID_ROW_TRUE_EXTREMA_LONG', 'OUTPUT_GRID_WINDOW_DP_EXTREMA', 'OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG', 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA', 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA_2_5_NORM_64_BATCH', 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA_LONG'],
+                fidelity: [56.88999999999999, 56.830000000000005, 56.730000000000004, 56.599999999999994, 56.730000000000004, 67.42, 60.050000000000004, 73.18, 72.09, 77.41],
+                utility: [50, 50, 50, 50, 50, 50, 50, 50, 50, 50],
+                privacy: [37.54139344262295, 37.54139344262295, 37.08101092896175, 62.45860655737705, 37.08101092896175, 37.54139344262295, 37.54139344262295, 37.08101092896175, 37.08101092896175, 37.08101092896175],
+                diversity: [53.77342897660557, 52.839152867254235, 56.35132256318196, 56.02947746009501, 55.697821145454775, 105.58744656426448, 108.98705819078529, 101.26226818301052, 107.03227769027637, 84.71716391600032],
+                overall: [49.55120560480713, 49.30263657746929, 50.04058337303593, 56.272021004368014, 49.877208018604136, 65.13721000172185, 64.14461290835206, 65.38081977799307, 66.55082215480954, 62.302043711240515]
+            };
+            
+            epsilonData['10'] = {
+                groups: ['OUTPUT_GRID_ROW_DP_EXTREMA', 'OUTPUT_GRID_ROW_DP_EXTREMA_LONG', 'OUTPUT_GRID_ROW_TRUE_EXTREMA', 'OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH', 'OUTPUT_GRID_ROW_TRUE_EXTREMA_LONG', 'OUTPUT_GRID_WINDOW_DP_EXTREMA', 'OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG', 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA', 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA_2_5_NORM_64_BATCH', 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA_LONG'],
+                fidelity: [59.050000000000004, 58.07, 59.709999999999994, 58.599999999999994, 59.11, 87.41, 82.89999999999999, 87.57000000000001, 87.4, 87.98],
+                utility: [50, 50, 50, 50, 50, 50, 50, 50, 50, 50],
+                privacy: [37.169808743169405, 37.169808743169405, 37.08101092896175, 37.169808743169405, 37.08101092896175, 37.169808743169405, 37.169808743169405, 37.08101092896175, 37.08101092896175, 37.08101092896175],
+                diversity: [72.75087895091286, 64.99711711230118, 78.21651473419175, 70.46551016848449, 72.60779803895679, 94.48286521749598, 84.46516296556258, 99.20078789867924, 96.25137523172165, 99.63658614750884],
+                overall: [54.74267192352057, 52.55923146386765, 56.251881415788375, 54.05882972791347, 54.69970224197964, 67.26566849016635, 63.63374292718299, 68.46294970691025, 67.68309654017085, 68.67439926911766]
+            };
+            
+            epsilonData['10000'] = {
+                groups: ['OUTPUT_GRID_ROW_DP_EXTREMA', 'OUTPUT_GRID_ROW_DP_EXTREMA_LONG', 'OUTPUT_GRID_ROW_TRUE_EXTREMA', 'OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH', 'OUTPUT_GRID_ROW_TRUE_EXTREMA_LONG', 'OUTPUT_GRID_WINDOW_DP_EXTREMA', 'OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG', 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA', 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA_2_5_NORM_64_BATCH', 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA_LONG'],
+                fidelity: [89.11, 88.55, 90.05, 89.09, 88.91, 91.61, 91.45, 92.04, 91.16, 91.60000000000001],
+                utility: [50, 50, 50, 50, 50, 50, 50, 50, 50, 50],
+                privacy: [37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175],
+                diversity: [100.33269566868009, 100.10156415068525, 100.70653954163484, 101.71398670083163, 100.43845947054606, 100.88073858872836, 103.26082665912533, 100.1149094260333, 103.37153505098912, 99.75113682777405],
+                overall: [69.13092664941047, 68.93314376991175, 69.45938761764916, 69.47124940744834, 69.10736759987695, 69.89293737942253, 70.44795939702176, 69.80898008874877, 70.40313649498772, 69.60803693918396]
+            };
+            
+            epsilonData['Unknown'] = {
+                groups: [],
+                fidelity: [],
+                utility: [],
+                privacy: [],
+                diversity: [],
+                overall: []
+            };
+            
+            epsilonData['100'] = {
+                groups: ['OUTPUT_GRID_ROW_DP_EXTREMA', 'OUTPUT_GRID_ROW_DP_EXTREMA_LONG', 'OUTPUT_GRID_ROW_TRUE_EXTREMA', 'OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH', 'OUTPUT_GRID_ROW_TRUE_EXTREMA_LONG', 'OUTPUT_GRID_WINDOW_DP_EXTREMA', 'OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG', 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA', 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA_2_5_NORM_64_BATCH', 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA_LONG'],
+                fidelity: [68.82000000000001, 57.21000000000001, 72.33000000000001, 69.25, 74.91, 88.56, 87.42999999999999, 89.83, 88.12, 89.61],
+                utility: [50, 50, 50, 50, 50, 50, 50, 50, 50, 50],
+                privacy: [37.09330601092896, 37.09330601092896, 37.08101092896175, 37.09330601092896, 37.08101092896175, 37.09330601092896, 37.09330601092896, 37.08101092896175, 37.08101092896175, 37.08101092896175],
+                diversity: [107.53451888303547, 110.70597703801862, 105.64975826003827, 109.06456735875332, 85.67701949773759, 97.74539217140551, 97.06272409956526, 100.53998403373554, 101.78286103311682, 100.59584658403418],
+                overall: [65.86195622349112, 63.75232076223689, 66.26519229725001, 66.35196834242058, 61.91700760667483, 68.34967454558361, 67.89650752762356, 69.36274874067432, 69.24596799051965, 69.32171437824898]
+            };
+            
+            epsilonData['1000'] = {
+                groups: ['OUTPUT_GRID_ROW_DP_EXTREMA', 'OUTPUT_GRID_ROW_DP_EXTREMA_LONG', 'OUTPUT_GRID_ROW_TRUE_EXTREMA', 'OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH', 'OUTPUT_GRID_ROW_TRUE_EXTREMA_LONG', 'OUTPUT_GRID_WINDOW_DP_EXTREMA', 'OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG', 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA', 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA_2_5_NORM_64_BATCH', 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA_LONG'],
+                fidelity: [73.72999999999999, 74.95, 76.88000000000001, 75.87, 84.78999999999999, 91.77, 91.82000000000001, 91.69, 89.01, 91.81],
+                utility: [50, 50, 50, 50, 50, 50, 50, 50, 50, 50],
+                privacy: [37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175],
+                diversity: [72.52988657598476, 71.72460651924743, 79.67739229876416, 76.20271734793987, 93.31919681993509, 102.90081796058249, 101.48444929200295, 103.20774950050094, 103.0624594920258, 101.68039856060464],
+                overall: [58.335224376236624, 58.4389043620523, 60.90960080693148, 59.78843206922541, 66.2975519372242, 70.43795722238605, 70.09636505524117, 70.49469010736567, 69.78836760524689, 70.1428523723916]
+            };
+            
+            
+            // Pareto Frontier
+            
+        // Pareto Frontier Chart
+        var paretoData = [];
+        
+        // All points
+        
+            paretoData.push({
+                x: [37.54139344262295, 37.169808743169405, 37.09330601092896, 37.08101092896175, 37.08101092896175, 37.08101092896175],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'markers',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_ROW_DP_EXTREMA',
+                text: ['ε=1', 'ε=10', 'ε=100', 'ε=1000', 'ε=10000', 'ε=Inf'],
+                marker: {
+                    size: 10,
+                    color: groupColors[0],
+                    opacity: 0.6
+                }
+            });
+            
+            paretoData.push({
+                x: [37.54139344262295, 37.169808743169405, 37.09330601092896, 37.08101092896175, 37.08101092896175, 50.0],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'markers',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_ROW_DP_EXTREMA_LONG',
+                text: ['ε=1', 'ε=10', 'ε=100', 'ε=1000', 'ε=10000', 'ε=Unknown'],
+                marker: {
+                    size: 10,
+                    color: groupColors[1],
+                    opacity: 0.6
+                }
+            });
+            
+            paretoData.push({
+                x: [37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 50.0],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'markers',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_ROW_TRUE_EXTREMA',
+                text: ['ε=1', 'ε=10', 'ε=100', 'ε=1000', 'ε=10000', 'ε=Unknown'],
+                marker: {
+                    size: 10,
+                    color: groupColors[2],
+                    opacity: 0.6
+                }
+            });
+            
+            paretoData.push({
+                x: [62.45860655737705, 37.169808743169405, 37.09330601092896, 37.08101092896175, 37.08101092896175, 50.0],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'markers',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH',
+                text: ['ε=1', 'ε=10', 'ε=100', 'ε=1000', 'ε=10000', 'ε=Unknown'],
+                marker: {
+                    size: 10,
+                    color: groupColors[3],
+                    opacity: 0.6
+                }
+            });
+            
+            paretoData.push({
+                x: [37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 50.0],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'markers',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_ROW_TRUE_EXTREMA_LONG',
+                text: ['ε=1', 'ε=10', 'ε=100', 'ε=1000', 'ε=10000', 'ε=Unknown'],
+                marker: {
+                    size: 10,
+                    color: groupColors[4],
+                    opacity: 0.6
+                }
+            });
+            
+            paretoData.push({
+                x: [37.54139344262295, 37.169808743169405, 37.09330601092896, 37.08101092896175, 37.08101092896175, 50.0],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'markers',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_WINDOW_DP_EXTREMA',
+                text: ['ε=1', 'ε=10', 'ε=100', 'ε=1000', 'ε=10000', 'ε=Unknown'],
+                marker: {
+                    size: 10,
+                    color: groupColors[5],
+                    opacity: 0.6
+                }
+            });
+            
+            paretoData.push({
+                x: [37.54139344262295, 37.169808743169405, 37.09330601092896, 37.08101092896175, 37.08101092896175, 50.0],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'markers',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG',
+                text: ['ε=1', 'ε=10', 'ε=100', 'ε=1000', 'ε=10000', 'ε=Unknown'],
+                marker: {
+                    size: 10,
+                    color: groupColors[6],
+                    opacity: 0.6
+                }
+            });
+            
+            paretoData.push({
+                x: [37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 50.0],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'markers',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA',
+                text: ['ε=1', 'ε=10', 'ε=100', 'ε=1000', 'ε=10000', 'ε=Unknown'],
+                marker: {
+                    size: 10,
+                    color: groupColors[7],
+                    opacity: 0.6
+                }
+            });
+            
+            paretoData.push({
+                x: [37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 50.0],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'markers',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA_2_5_NORM_64_BATCH',
+                text: ['ε=1', 'ε=10', 'ε=100', 'ε=1000', 'ε=10000', 'ε=Unknown'],
+                marker: {
+                    size: 10,
+                    color: groupColors[8],
+                    opacity: 0.6
+                }
+            });
+            
+            paretoData.push({
+                x: [37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 50.0],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'markers',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA_LONG',
+                text: ['ε=1', 'ε=10', 'ε=100', 'ε=1000', 'ε=10000', 'ε=Unknown'],
+                marker: {
+                    size: 10,
+                    color: groupColors[9],
+                    opacity: 0.6
+                }
+            });
+            
+            paretoData.push({
+                x: [62.45860655737705],
+                y: [50],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'Pareto Frontier',
+                text: ['OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH (ε=1)'],
+                marker: {
+                    size: 15,
+                    color: 'red',
+                    symbol: 'star'
+                },
+                line: {
+                    color: 'red',
+                    width: 2,
+                    dash: 'dash'
+                }
+            });
+            
+        var paretoLayout = {
+            title: 'Pareto Optimal Configurations',
+            xaxis: {title: 'Privacy Score (%)', range: [0, 105]},
+            yaxis: {title: 'Utility Score (%)', range: [0, 105]},
+            hovermode: 'closest',
+            paper_bgcolor: 'transparent',
+            plot_bgcolor: 'rgba(0,0,0,0.02)',
+            font: {family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'}
+        };
+        
+        Plotly.newPlot('pareto-frontier-chart', paretoData, paretoLayout, {responsive: true});
+        
+            
+            // Method Tradeoff Curves
+            
+        // Method Tradeoff Curves
+        var tradeoffData = [];
+        
+            tradeoffData.push({
+                x: [37.54139344262295, 37.169808743169405, 37.09330601092896, 37.08101092896175, 37.08101092896175, 37.08101092896175],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'lines+markers',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_ROW_DP_EXTREMA',
+                line: {
+                    color: groupColors[0],
+                    width: 3
+                },
+                marker: {
+                    size: 8,
+                    color: groupColors[0]
+                }
+            });
+            
+            tradeoffData.push({
+                x: [50.0, 37.54139344262295, 37.169808743169405, 37.09330601092896, 37.08101092896175, 37.08101092896175],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'lines+markers',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_ROW_DP_EXTREMA_LONG',
+                line: {
+                    color: groupColors[1],
+                    width: 3
+                },
+                marker: {
+                    size: 8,
+                    color: groupColors[1]
+                }
+            });
+            
+            tradeoffData.push({
+                x: [50.0, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'lines+markers',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_ROW_TRUE_EXTREMA',
+                line: {
+                    color: groupColors[2],
+                    width: 3
+                },
+                marker: {
+                    size: 8,
+                    color: groupColors[2]
+                }
+            });
+            
+            tradeoffData.push({
+                x: [50.0, 62.45860655737705, 37.169808743169405, 37.09330601092896, 37.08101092896175, 37.08101092896175],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'lines+markers',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_ROW_TRUE_EXTREMA_2_5_NORM_64_BATCH',
+                line: {
+                    color: groupColors[3],
+                    width: 3
+                },
+                marker: {
+                    size: 8,
+                    color: groupColors[3]
+                }
+            });
+            
+            tradeoffData.push({
+                x: [50.0, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'lines+markers',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_ROW_TRUE_EXTREMA_LONG',
+                line: {
+                    color: groupColors[4],
+                    width: 3
+                },
+                marker: {
+                    size: 8,
+                    color: groupColors[4]
+                }
+            });
+            
+            tradeoffData.push({
+                x: [50.0, 37.54139344262295, 37.169808743169405, 37.09330601092896, 37.08101092896175, 37.08101092896175],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'lines+markers',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_WINDOW_DP_EXTREMA',
+                line: {
+                    color: groupColors[5],
+                    width: 3
+                },
+                marker: {
+                    size: 8,
+                    color: groupColors[5]
+                }
+            });
+            
+            tradeoffData.push({
+                x: [50.0, 37.54139344262295, 37.169808743169405, 37.09330601092896, 37.08101092896175, 37.08101092896175],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'lines+markers',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG',
+                line: {
+                    color: groupColors[6],
+                    width: 3
+                },
+                marker: {
+                    size: 8,
+                    color: groupColors[6]
+                }
+            });
+            
+            tradeoffData.push({
+                x: [50.0, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'lines+markers',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA',
+                line: {
+                    color: groupColors[7],
+                    width: 3
+                },
+                marker: {
+                    size: 8,
+                    color: groupColors[7]
+                }
+            });
+            
+            tradeoffData.push({
+                x: [50.0, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'lines+markers',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA_2_5_NORM_64_BATCH',
+                line: {
+                    color: groupColors[8],
+                    width: 3
+                },
+                marker: {
+                    size: 8,
+                    color: groupColors[8]
+                }
+            });
+            
+            tradeoffData.push({
+                x: [50.0, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175, 37.08101092896175],
+                y: [50, 50, 50, 50, 50, 50],
+                mode: 'lines+markers',
+                type: 'scatter',
+                name: 'OUTPUT_GRID_WINDOW_TRUE_EXTREMA_LONG',
+                line: {
+                    color: groupColors[9],
+                    width: 3
+                },
+                marker: {
+                    size: 8,
+                    color: groupColors[9]
+                }
+            });
+            
+        var tradeoffLayout = {
+            title: 'Privacy-Utility Tradeoff Curves by Method',
+            xaxis: {title: 'Privacy Score (%)', range: [0, 105]},
+            yaxis: {title: 'Utility Score (%)', range: [0, 105]},
+            hovermode: 'x unified',
+            paper_bgcolor: 'transparent',
+            plot_bgcolor: 'rgba(0,0,0,0.02)',
+            font: {family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'}
+        };
+        
+        Plotly.newPlot('method-tradeoff-curves', tradeoffData, tradeoffLayout, {responsive: true});
+        
+            
+            // Epsilon tab interactions
+            document.querySelectorAll('.epsilon-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.epsilon-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const selectedEpsilon = this.dataset.epsilon;
+                    updateEpsilonChart(selectedEpsilon);
+                });
+            });
+            
+            // Initial epsilon chart
+            const firstEpsilon = document.querySelector('.epsilon-tab.active').dataset.epsilon;
+            updateEpsilonChart(firstEpsilon);
+            
+            function updateEpsilonChart(epsilon) {
+                
+        const data = epsilonData[epsilon];
+        if (!data) return;
+        
+        var traces = [
+            {
+                x: data.groups,
+                y: data.fidelity,
+                name: 'Fidelity',
+                type: 'bar',
+                marker: {color: 'rgba(102, 126, 234, 0.8)'}
+            },
+            {
+                x: data.groups,
+                y: data.utility,
+                name: 'Utility',
+                type: 'bar',
+                marker: {color: 'rgba(23, 162, 184, 0.8)'}
+            },
+            {
+                x: data.groups,
+                y: data.privacy,
+                name: 'Privacy',
+                type: 'bar',
+                marker: {color: 'rgba(40, 167, 69, 0.8)'}
+            },
+            {
+                x: data.groups,
+                y: data.diversity,
+                name: 'Diversity',
+                type: 'bar',
+                marker: {color: 'rgba(255, 193, 7, 0.8)'}
+            }
+        ];
+        
+        var layout = {
+            title: `Performance at ε = ${epsilon}`,
+            barmode: 'group',
+            yaxis: {title: 'Score (%)', range: [0, 105]},
+            xaxis: {title: 'Method'},
+            paper_bgcolor: 'transparent',
+            plot_bgcolor: 'rgba(0,0,0,0.02)',
+            font: {family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'}
+        };
+        
+        Plotly.newPlot('epsilon-performance-chart', traces, layout, {responsive: true});
+        
+            }
+            
+            // Animation on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            }, {threshold: 0.1});
+            
+            document.querySelectorAll('.chart-container').forEach(el => {
+                observer.observe(el);
+            });
+        });
+        
+    </script>
+</body>
+</html>

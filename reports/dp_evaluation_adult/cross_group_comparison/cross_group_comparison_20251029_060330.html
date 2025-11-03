@@ -1,0 +1,1187 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cross-Group DP Comparison</title>
+    
+    <!-- External Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #17a2b8;
+            --dark: #2d3436;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-tertiary: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f4f6f9;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Animated Wave Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="%23667eea" opacity="0.3"/></svg>') repeat-x;
+            animation: wave 10s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
+        }
+        
+        .wave:nth-of-type(2) {
+            bottom: 10px;
+            opacity: 0.5;
+            animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) -0.125s infinite;
+        }
+        
+        .wave:nth-of-type(3) {
+            bottom: 20px;
+            opacity: 0.2;
+            animation: wave 12s cubic-bezier(0.36, 0.45, 0.63, 0.53) 0.25s infinite;
+        }
+        
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-1200px); }
+        }
+        
+        /* Header */
+        .dashboard-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 4rem 0;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+        
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
+        }
+        
+        .group-count-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+        
+        /* Analysis Sections */
+        .analysis-section {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        .section-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            color: var(--primary);
+        }
+        
+        /* Overview Grid */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .group-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .group-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .group-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient-primary);
+        }
+        
+        .group-card.best::before {
+            background: var(--gradient-success);
+        }
+        
+        .group-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .group-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .stat-value {
+            font-weight: 700;
+            font-size: 1.125rem;
+        }
+        
+        /* Method Comparison Charts */
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+        
+        .chart-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f2f5;
+        }
+        
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .chart-subtitle {
+            color: #6c757d;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        /* Best Configuration Cards */
+        .best-config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .best-config-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .best-config-card:hover {
+            border-color: var(--primary);
+            transform: scale(1.02);
+        }
+        
+        .trophy-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .gold { color: #FFD700; }
+        .silver { color: #C0C0C0; }
+        .bronze { color: #CD7F32; }
+        
+        .config-metric {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+        
+        .config-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .config-details {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: #495057;
+        }
+        
+        /* Comparison Tables */
+        .comparison-matrix {
+            overflow-x: auto;
+        }
+        
+        .matrix-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .matrix-table thead {
+            background: var(--gradient-primary);
+            color: white;
+        }
+        
+        .matrix-table th {
+            padding: 1rem;
+            font-weight: 600;
+            text-align: center;
+            border: none;
+        }
+        
+        .matrix-table td {
+            padding: 1rem;
+            text-align: center;
+            background: white;
+            border: 1px solid #e9ecef;
+        }
+        
+        .matrix-table tbody tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        /* Score Cells */
+        .score-cell {
+            font-weight: 600;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+        
+        .score-excellent {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success);
+        }
+        
+        .score-good {
+            background: rgba(23, 162, 184, 0.1);
+            color: var(--info);
+        }
+        
+        .score-fair {
+            background: rgba(255, 193, 7, 0.1);
+            color: var(--warning);
+        }
+        
+        .score-poor {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--danger);
+        }
+        
+        .score-missing {
+            background: rgba(108, 117, 125, 0.1);
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        /* Epsilon Tabs */
+        .epsilon-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .epsilon-tab {
+            padding: 0.75rem 1.5rem;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .epsilon-tab:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: var(--primary);
+        }
+        
+        .epsilon-tab.active {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: transparent;
+        }
+        
+        /* Insights & Recommendations */
+        .insight-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            border-left: 4px solid var(--primary);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .insight-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .insight-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .insight-title {
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 1.125rem;
+        }
+        
+        .insight-content {
+            color: #495057;
+            line-height: 1.6;
+        }
+        
+        /* Legend */
+        .legend-container {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .legend-color {
+            width: 30px;
+            height: 15px;
+            border-radius: 3px;
+        }
+        
+        /* Footer */
+        .dashboard-footer {
+            background: var(--dark);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .best-config-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .epsilon-tabs {
+                justify-content: center;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+    
+    <!-- Header -->
+    
+        <header class="dashboard-header">
+            <div class="container-fluid">
+                <div class="text-center">
+                    <h1 class="display-4 mb-3">
+                        <i class="fas fa-layer-group me-3"></i>
+                        Cross-Group DP Comparison
+                    </h1>
+                    <p class="lead mb-3">
+                        Comprehensive Cross-Group Performance Analysis
+                    </p>
+                    <div class="group-count-badge">
+                        <i class="fas fa-project-diagram"></i>
+                        <span>2 Methods Compared</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+    
+    <!-- Main Content -->
+    <main class="container-fluid my-4">
+        <!-- Overview Section -->
+        <div class="overview-grid">
+            <div class="group-card">
+                <div class="group-name">
+                    ADULT_BENCHMARK_BASE
+                    
+                </div>
+                <div class="group-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Experiments</span>
+                        <span class="stat-value">3</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Fidelity</span>
+                        <span class="stat-value" style="color: #28a745">
+                            90.1%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Utility</span>
+                        <span class="stat-value" style="color: #28a745">
+                            74.5%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Privacy</span>
+                        <span class="stat-value" style="color: #28a745">
+                            98.2%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Overall Score</span>
+                        <span class="stat-value" style="color: #28a745">
+                            <strong>91.1%</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="group-card best">
+                <div class="group-name">
+                    ADULT_BENCHMARK_EMA
+                     <i class="fas fa-crown text-warning ms-2"></i>
+                </div>
+                <div class="group-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Experiments</span>
+                        <span class="stat-value">3</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Fidelity</span>
+                        <span class="stat-value" style="color: #28a745">
+                            90.1%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Utility</span>
+                        <span class="stat-value" style="color: #28a745">
+                            75.1%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Privacy</span>
+                        <span class="stat-value" style="color: #28a745">
+                            99.3%
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Overall Score</span>
+                        <span class="stat-value" style="color: #28a745">
+                            <strong>91.5%</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            </div>
+        
+        <!-- Method Comparison -->
+        <section class="analysis-section">
+            <h2 class="section-title">
+                <i class="fas fa-code-branch me-3"></i>
+                Method Comparison Across All Epsilons
+            </h2>
+            <div class="row">
+        <div class="col-12">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">Overall Performance Comparison</div>
+                    <div class="chart-subtitle">Average scores across all epsilon values</div>
+                </div>
+                <div id="overall-comparison-chart" style="height: 400px;"></div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">Privacy vs Utility Scatter</div>
+                    <div class="chart-subtitle">Each point represents a configuration</div>
+                </div>
+                <div id="privacy-utility-scatter" style="height: 400px;"></div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">Fidelity vs Diversity Scatter</div>
+                    <div class="chart-subtitle">Trade-offs between data quality metrics</div>
+                </div>
+                <div id="fidelity-diversity-scatter" style="height: 400px;"></div>
+            </div>
+        </div>
+        </div><div class="comparison-matrix mt-4"><table class="matrix-table"><thead><tr><th>Method</th><th>Epsilon</th><th>Fidelity</th><th>Utility</th><th>Privacy</th><th>Diversity</th><th>Overall</th></tr></thead><tbody><tr><td><strong>ADULT_BENCHMARK_BASE</strong></td><td>100.0</td><td class="score-cell score-excellent">95.2%</td><td class="score-cell score-good">77.2%</td><td class="score-cell score-excellent">100.0%</td><td class="score-cell score-excellent">99.9%</td><td class="score-cell score-excellent"><strong>93.1%</strong></td></tr><tr><td><strong>ADULT_BENCHMARK_BASE</strong></td><td>1.0</td><td class="score-cell score-excellent">84.9%</td><td class="score-cell score-good">72.2%</td><td class="score-cell score-excellent">94.5%</td><td class="score-cell score-excellent">103.2%</td><td class="score-cell score-excellent"><strong>88.7%</strong></td></tr><tr><td><strong>ADULT_BENCHMARK_BASE</strong></td><td>10.0</td><td class="score-cell score-excellent">90.3%</td><td class="score-cell score-good">74.2%</td><td class="score-cell score-excellent">100.0%</td><td class="score-cell score-excellent">101.2%</td><td class="score-cell score-excellent"><strong>91.4%</strong></td></tr><tr><td><strong>ADULT_BENCHMARK_EMA</strong></td><td>1.0</td><td class="score-cell score-excellent">84.8%</td><td class="score-cell score-good">73.1%</td><td class="score-cell score-excellent">98.0%</td><td class="score-cell score-excellent">103.2%</td><td class="score-cell score-excellent"><strong>89.8%</strong></td></tr><tr><td><strong>ADULT_BENCHMARK_EMA</strong></td><td>10.0</td><td class="score-cell score-excellent">90.3%</td><td class="score-cell score-good">74.3%</td><td class="score-cell score-excellent">100.0%</td><td class="score-cell score-excellent">101.4%</td><td class="score-cell score-excellent"><strong>91.5%</strong></td></tr><tr><td><strong>ADULT_BENCHMARK_EMA</strong></td><td>100.0</td><td class="score-cell score-excellent">95.3%</td><td class="score-cell score-good">77.9%</td><td class="score-cell score-excellent">100.0%</td><td class="score-cell score-excellent">99.8%</td><td class="score-cell score-excellent"><strong>93.2%</strong></td></tr></tbody></table></div>
+        </section>
+        
+        <!-- Epsilon-specific Analysis -->
+        <section class="analysis-section">
+            <h2 class="section-title">
+                <i class="fas fa-sliders-h me-3"></i>
+                Epsilon-Specific Performance
+            </h2>
+            <div class="epsilon-tabs"><div class="epsilon-tab active" data-epsilon="1.0">ε = 1.0</div><div class="epsilon-tab " data-epsilon="10.0">ε = 10.0</div><div class="epsilon-tab " data-epsilon="100.0">ε = 100.0</div></div><div id="epsilon-specific-charts"><div class="row">
+        <div class="col-lg-12">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">Performance at Selected Epsilon</div>
+                    <div class="chart-subtitle">Comparing all methods at the same privacy budget</div>
+                </div>
+                <div id="epsilon-performance-chart" style="height: 400px;"></div>
+            </div>
+        </div>
+        </div></div>
+        </section>
+        
+        <!-- Best Configurations -->
+        <section class="analysis-section">
+            <h2 class="section-title">
+                <i class="fas fa-trophy me-3"></i>
+                Best Configurations
+            </h2>
+            <div class="best-config-grid">
+            <div class="best-config-card">
+                <div class="trophy-icon gold">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="config-metric">Best Overall</div>
+                <div class="config-value">93.2%</div>
+                <div class="config-details">
+                    <strong>ADULT_BENCHMARK_EMA</strong><br>
+                    ε = 100.0
+                </div>
+            </div>
+            
+            <div class="best-config-card">
+                <div class="trophy-icon silver">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="config-metric">Best Privacy</div>
+                <div class="config-value">100.0%</div>
+                <div class="config-details">
+                    <strong>ADULT_BENCHMARK_BASE</strong><br>
+                    ε = 100.0
+                </div>
+            </div>
+            
+            <div class="best-config-card">
+                <div class="trophy-icon bronze">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div class="config-metric">Best Utility</div>
+                <div class="config-value">77.9%</div>
+                <div class="config-details">
+                    <strong>ADULT_BENCHMARK_EMA</strong><br>
+                    ε = 100.0
+                </div>
+            </div>
+            
+            <div class="best-config-card">
+                <div class="trophy-icon bronze">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="config-metric">Best Fidelity</div>
+                <div class="config-value">95.3%</div>
+                <div class="config-details">
+                    <strong>ADULT_BENCHMARK_EMA</strong><br>
+                    ε = 100.0
+                </div>
+            </div>
+            </div>
+        </section>
+        
+        <!-- Tradeoff Analysis -->
+        <section class="analysis-section">
+            <h2 class="section-title">
+                <i class="fas fa-balance-scale-right me-3"></i>
+                Privacy-Utility Tradeoff Analysis
+            </h2>
+            <div class="row">
+        <div class="col-lg-12">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">Privacy-Utility Pareto Frontier</div>
+                    <div class="chart-subtitle">Optimal configurations across all methods</div>
+                </div>
+                <div id="pareto-frontier-chart" style="height: 500px;"></div>
+            </div>
+        </div>
+        
+        <div class="col-lg-12">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">Method-Specific Tradeoff Curves</div>
+                    <div class="chart-subtitle">How each method handles the privacy-utility balance</div>
+                </div>
+                <div id="method-tradeoff-curves" style="height: 500px;"></div>
+            </div>
+        </div>
+        </div>
+        </section>
+        
+        <!-- Recommendations -->
+        <section class="analysis-section">
+            <h2 class="section-title">
+                <i class="fas fa-lightbulb me-3"></i>
+                Insights & Recommendations
+            </h2>
+            
+            <div class="insight-card">
+                <div class="insight-header">
+                    <div class="insight-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="insight-title">Best Overall Method</div>
+                </div>
+                <div class="insight-content">
+                    <strong>ADULT_BENCHMARK_EMA</strong> achieves the best overall performance with an average score of 91.5% across all epsilon values. This method provides the most balanced trade-off between all metrics.
+                </div>
+            </div>
+            
+            <div class="insight-card">
+                <div class="insight-header">
+                    <div class="insight-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <div class="insight-title">Optimal Privacy-Utility Balance</div>
+                </div>
+                <div class="insight-content">
+                    The optimal privacy-utility balance is achieved by <strong>ADULT_BENCHMARK_EMA</strong> at ε=100.0, with 100.0% privacy and 77.9% utility.
+                </div>
+            </div>
+            
+            <div class="insight-card">
+                <div class="insight-header">
+                    <div class="insight-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="insight-title">Method Strengths</div>
+                </div>
+                <div class="insight-content">
+                    <strong>ADULT_BENCHMARK_BASE</strong>: Excels at diversity (101.4%)<br><strong>ADULT_BENCHMARK_EMA</strong>: Excels at diversity (101.5%)
+                </div>
+            </div>
+            
+            <div class="insight-card">
+                <div class="insight-header">
+                    <div class="insight-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="insight-title">Recommendation</div>
+                </div>
+                <div class="insight-content">
+                    
+            For most use cases, we recommend <strong>ADULT_BENCHMARK_EMA</strong> with ε=100.0, 
+            which achieves the best overall score of 93.2%. 
+            This configuration provides a good balance across all evaluation metrics.
+            For specific requirements (maximum privacy, highest utility, etc.), 
+            refer to the best configurations section above.
+            
+                </div>
+            </div>
+            
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0">
+                        <i class="fas fa-layer-group me-2"></i>
+                        Cross-Group DP Comparison
+                        <span class="mx-2">•</span>
+                        Generated October 29, 2025 at 06:03 AM
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const groupColors = ['#667eea', '#f093fb'];
+            const groupNames = ['ADULT_BENCHMARK_BASE', 'ADULT_BENCHMARK_EMA'];
+            
+            // Overall Comparison Chart
+            var overallData = [
+                {
+                    x: groupNames,
+                    y: [90.14666666666666, 90.14333333333333],
+                    name: 'Fidelity',
+                    type: 'bar',
+                    marker: {color: 'rgba(102, 126, 234, 0.8)'}
+                },
+                {
+                    x: groupNames,
+                    y: [74.53473373871384, 75.0957148414307],
+                    name: 'Utility',
+                    type: 'bar',
+                    marker: {color: 'rgba(23, 162, 184, 0.8)'}
+                },
+                {
+                    x: groupNames,
+                    y: [98.16853333333334, 99.3408],
+                    name: 'Privacy',
+                    type: 'bar',
+                    marker: {color: 'rgba(40, 167, 69, 0.8)'}
+                },
+                {
+                    x: groupNames,
+                    y: [101.44639441797365, 101.45738857287785],
+                    name: 'Diversity',
+                    type: 'bar',
+                    marker: {color: 'rgba(255, 193, 7, 0.8)'}
+                },
+                {
+                    x: groupNames,
+                    y: [91.07408203917187, 91.50930918691047],
+                    name: 'Overall',
+                    type: 'bar',
+                    marker: {color: 'rgba(220, 53, 69, 0.8)'}
+                }
+            ];
+            
+            var overallLayout = {
+                barmode: 'group',
+                yaxis: {title: 'Score (%)', range: [0, 105]},
+                xaxis: {title: 'Method'},
+                hovermode: 'x unified',
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'rgba(0,0,0,0.02)',
+                font: {family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'}
+            };
+            
+            Plotly.newPlot('overall-comparison-chart', overallData, overallLayout, {responsive: true});
+            
+            // Scatter Plots
+            
+        // Privacy vs Utility Scatter
+        var privacyUtilityData = [];
+        
+            privacyUtilityData.push({
+                x: [100.0, 94.50560000000002, 100.0],
+                y: [77.16356489159143, 72.24371967323874, 74.19691665131134],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'ADULT_BENCHMARK_BASE',
+                text: ["100.0", "1.0", "10.0"],
+                marker: {
+                    size: 10,
+                    color: groupColors[0]
+                },
+                line: {
+                    color: groupColors[0],
+                    width: 2
+                }
+            });
+            
+            privacyUtilityData.push({
+                x: [98.0224, 100.0, 100.0],
+                y: [73.11590197162336, 74.31361709968675, 77.857625452982],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'ADULT_BENCHMARK_EMA',
+                text: ["1.0", "10.0", "100.0"],
+                marker: {
+                    size: 10,
+                    color: groupColors[1]
+                },
+                line: {
+                    color: groupColors[1],
+                    width: 2
+                }
+            });
+            
+        var scatterLayout = {
+            xaxis: {title: 'Privacy Score (%)'},
+            yaxis: {title: 'Utility Score (%)'},
+            hovermode: 'closest',
+            paper_bgcolor: 'transparent',
+            plot_bgcolor: 'rgba(0,0,0,0.02)',
+            font: {family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'}
+        };
+        
+        Plotly.newPlot('privacy-utility-scatter', privacyUtilityData, scatterLayout, {responsive: true});
+        
+        // Fidelity vs Diversity Scatter
+        var fidelityDiversityData = [];
+        
+            fidelityDiversityData.push({
+                x: [95.23, 84.86, 90.35],
+                y: [99.88224279869647, 103.23039354198053, 101.22654691324395],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'ADULT_BENCHMARK_BASE',
+                marker: {
+                    size: 10,
+                    color: groupColors[0]
+                },
+                line: {
+                    color: groupColors[0],
+                    width: 2
+                }
+            });
+            
+            fidelityDiversityData.push({
+                x: [84.84, 90.31, 95.28],
+                y: [103.18362075299605, 101.42246350157369, 99.76608146406379],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'ADULT_BENCHMARK_EMA',
+                marker: {
+                    size: 10,
+                    color: groupColors[1]
+                },
+                line: {
+                    color: groupColors[1],
+                    width: 2
+                }
+            });
+            
+        var fidelityDiversityLayout = {
+            xaxis: {title: 'Fidelity Score (%)'},
+            yaxis: {title: 'Diversity Score (%)'},
+            hovermode: 'closest',
+            paper_bgcolor: 'transparent',
+            plot_bgcolor: 'rgba(0,0,0,0.02)',
+            font: {family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'}
+        };
+        
+        Plotly.newPlot('fidelity-diversity-scatter', fidelityDiversityData, fidelityDiversityLayout, {responsive: true});
+        
+            
+            // Epsilon-specific charts
+            
+        const epsilonData = {};
+        
+            epsilonData['10.0'] = {
+                groups: ["ADULT_BENCHMARK_BASE", "ADULT_BENCHMARK_EMA"],
+                fidelity: [90.35, 90.31],
+                utility: [74.19691665131134, 74.31361709968675],
+                privacy: [100.0, 100.0],
+                diversity: [101.22654691324395, 101.42246350157369],
+                overall: [91.44336589113882, 91.5115201503151]
+            };
+            
+            epsilonData['1.0'] = {
+                groups: ["ADULT_BENCHMARK_BASE", "ADULT_BENCHMARK_EMA"],
+                fidelity: [84.86, 84.84],
+                utility: [72.24371967323874, 73.11590197162336],
+                privacy: [94.50560000000002, 98.0224],
+                diversity: [103.23039354198053, 103.18362075299605],
+                overall: [88.70992830380482, 89.79048068115486]
+            };
+            
+            epsilonData['100.0'] = {
+                groups: ["ADULT_BENCHMARK_BASE", "ADULT_BENCHMARK_EMA"],
+                fidelity: [95.23, 95.28],
+                utility: [77.16356489159143, 77.857625452982],
+                privacy: [100.0, 100.0],
+                diversity: [99.88224279869647, 99.76608146406379],
+                overall: [93.06895192257197, 93.22592672926145]
+            };
+            
+            
+            // Pareto Frontier
+            
+        // Pareto Frontier Chart
+        var paretoData = [];
+        
+        // All points
+        
+            paretoData.push({
+                x: [100.0, 94.50560000000002, 100.0],
+                y: [77.16356489159143, 72.24371967323874, 74.19691665131134],
+                mode: 'markers',
+                type: 'scatter',
+                name: 'ADULT_BENCHMARK_BASE',
+                text: ["\u03b5=100.0", "\u03b5=1.0", "\u03b5=10.0"],
+                marker: {
+                    size: 10,
+                    color: groupColors[0],
+                    opacity: 0.6
+                }
+            });
+            
+            paretoData.push({
+                x: [98.0224, 100.0, 100.0],
+                y: [73.11590197162336, 74.31361709968675, 77.857625452982],
+                mode: 'markers',
+                type: 'scatter',
+                name: 'ADULT_BENCHMARK_EMA',
+                text: ["\u03b5=1.0", "\u03b5=10.0", "\u03b5=100.0"],
+                marker: {
+                    size: 10,
+                    color: groupColors[1],
+                    opacity: 0.6
+                }
+            });
+            
+            paretoData.push({
+                x: [100.0],
+                y: [77.857625452982],
+                mode: 'markers+lines',
+                type: 'scatter',
+                name: 'Pareto Frontier',
+                text: ["ADULT_BENCHMARK_EMA (\u03b5=100.0)"],
+                marker: {
+                    size: 15,
+                    color: 'red',
+                    symbol: 'star'
+                },
+                line: {
+                    color: 'red',
+                    width: 2,
+                    dash: 'dash'
+                }
+            });
+            
+        var paretoLayout = {
+            title: 'Pareto Optimal Configurations',
+            xaxis: {title: 'Privacy Score (%)', range: [0, 105]},
+            yaxis: {title: 'Utility Score (%)', range: [0, 105]},
+            hovermode: 'closest',
+            paper_bgcolor: 'transparent',
+            plot_bgcolor: 'rgba(0,0,0,0.02)',
+            font: {family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'}
+        };
+        
+        Plotly.newPlot('pareto-frontier-chart', paretoData, paretoLayout, {responsive: true});
+        
+            
+            // Method Tradeoff Curves
+            
+        // Method Tradeoff Curves
+        var tradeoffData = [];
+        
+            tradeoffData.push({
+                x: [94.50560000000002, 100.0, 100.0],
+                y: [72.24371967323874, 74.19691665131134, 77.16356489159143],
+                mode: 'lines+markers',
+                type: 'scatter',
+                name: 'ADULT_BENCHMARK_BASE',
+                line: {
+                    color: groupColors[0],
+                    width: 3
+                },
+                marker: {
+                    size: 8,
+                    color: groupColors[0]
+                }
+            });
+            
+            tradeoffData.push({
+                x: [98.0224, 100.0, 100.0],
+                y: [73.11590197162336, 74.31361709968675, 77.857625452982],
+                mode: 'lines+markers',
+                type: 'scatter',
+                name: 'ADULT_BENCHMARK_EMA',
+                line: {
+                    color: groupColors[1],
+                    width: 3
+                },
+                marker: {
+                    size: 8,
+                    color: groupColors[1]
+                }
+            });
+            
+        var tradeoffLayout = {
+            title: 'Privacy-Utility Tradeoff Curves by Method',
+            xaxis: {title: 'Privacy Score (%)', range: [0, 105]},
+            yaxis: {title: 'Utility Score (%)', range: [0, 105]},
+            hovermode: 'x unified',
+            paper_bgcolor: 'transparent',
+            plot_bgcolor: 'rgba(0,0,0,0.02)',
+            font: {family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'}
+        };
+        
+        Plotly.newPlot('method-tradeoff-curves', tradeoffData, tradeoffLayout, {responsive: true});
+        
+            
+            // Epsilon tab interactions
+            document.querySelectorAll('.epsilon-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.epsilon-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const selectedEpsilon = this.dataset.epsilon;
+                    updateEpsilonChart(selectedEpsilon);
+                });
+            });
+            
+            // Initial epsilon chart
+            const firstEpsilon = document.querySelector('.epsilon-tab.active').dataset.epsilon;
+            updateEpsilonChart(firstEpsilon);
+            
+            function updateEpsilonChart(epsilon) {
+                
+        const data = epsilonData[epsilon];
+        if (!data) return;
+        
+        var traces = [
+            {
+                x: data.groups,
+                y: data.fidelity,
+                name: 'Fidelity',
+                type: 'bar',
+                marker: {color: 'rgba(102, 126, 234, 0.8)'}
+            },
+            {
+                x: data.groups,
+                y: data.utility,
+                name: 'Utility',
+                type: 'bar',
+                marker: {color: 'rgba(23, 162, 184, 0.8)'}
+            },
+            {
+                x: data.groups,
+                y: data.privacy,
+                name: 'Privacy',
+                type: 'bar',
+                marker: {color: 'rgba(40, 167, 69, 0.8)'}
+            },
+            {
+                x: data.groups,
+                y: data.diversity,
+                name: 'Diversity',
+                type: 'bar',
+                marker: {color: 'rgba(255, 193, 7, 0.8)'}
+            }
+        ];
+        
+        var layout = {
+            title: `Performance at ε = ${epsilon}`,
+            barmode: 'group',
+            yaxis: {title: 'Score (%)', range: [0, 105]},
+            xaxis: {title: 'Method'},
+            paper_bgcolor: 'transparent',
+            plot_bgcolor: 'rgba(0,0,0,0.02)',
+            font: {family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'}
+        };
+        
+        Plotly.newPlot('epsilon-performance-chart', traces, layout, {responsive: true});
+        
+            }
+            
+            // Animation on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            }, {threshold: 0.1});
+            
+            document.querySelectorAll('.chart-container').forEach(el => {
+                observer.observe(el);
+            });
+        });
+        
+    </script>
+</body>
+</html>

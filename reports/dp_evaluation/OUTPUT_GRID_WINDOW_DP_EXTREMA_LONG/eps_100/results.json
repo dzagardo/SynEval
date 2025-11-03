@@ -1,0 +1,624 @@
+{
+  "experiment_id": "OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG_eps100",
+  "group": "OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG",
+  "group_display_name": "Window DP + Extrema Protection, 20k",
+  "epsilon": "100",
+  "timestamp": "2025-10-31T17:09:44.835373",
+  "status": "success",
+  "fidelity": {
+    "diagnostic": {
+      "Data Validity": 0.9988,
+      "Data Structure": 1.0,
+      "Overall": {
+        "score": 0.9994
+      }
+    },
+    "quality": {
+      "Column Shapes": 0.8051,
+      "Column Pair Trends": 0.9434,
+      "Overall": {
+        "score": 0.8743
+      }
+    },
+    "numerical_statistics": {
+      "Open": {
+        "original_statistics": {
+          "count": 87888,
+          "mean": 452.15221280678855,
+          "median": 306.9485951257811,
+          "std": 302.2459377475463,
+          "min": 49.274527777621856,
+          "max": 1270.9999968876166,
+          "q25": 233.62673979853696,
+          "q75": 613.5524664626937,
+          "skewness": 0.9848881188295949,
+          "kurtosis": -0.15824675068307759
+        },
+        "synthetic_statistics": {
+          "count": 96048,
+          "mean": 410.0855880721258,
+          "median": 310.084479081111,
+          "std": 218.30812605229707,
+          "min": 177.2083577338303,
+          "max": 1147.467285245165,
+          "q25": 265.075940340374,
+          "q75": 477.00437645907317,
+          "skewness": 1.5714274985324042,
+          "kurtosis": 1.466575293109659
+        },
+        "relative_differences": {
+          "mean_diff": 0.09303642345025624,
+          "median_diff": 0.010216316364128973,
+          "std_diff": 0.27771361402170125,
+          "skewness_diff": 0.5865393797028092,
+          "kurtosis_diff": 1.6248220437927365
+        },
+        "range_coverage": 0.7941709918007611,
+        "distribution_similarity": {
+          "kl_divergence": 0.3833211064338684,
+          "histogram_similarity": 0.6301118731498718
+        },
+        "overall_fidelity_score": 0.7520526275254541,
+        "fidelity_interpretation": "Fair fidelity - synthetic data preserves basic statistical properties"
+      },
+      "High": {
+        "original_statistics": {
+          "count": 87888,
+          "mean": 456.2560998464088,
+          "median": 309.3529722628442,
+          "std": 304.67942760910233,
+          "min": 50.5412848544881,
+          "max": 1273.8899853543353,
+          "q25": 235.64239616192043,
+          "q75": 624.5649903982192,
+          "skewness": 0.9900858528464762,
+          "kurtosis": -0.14714930855365616
+        },
+        "synthetic_statistics": {
+          "count": 96048,
+          "mean": 388.6771269471084,
+          "median": 281.9185623039116,
+          "std": 229.32977613453687,
+          "min": 160.39858814127265,
+          "max": 1179.782916521782,
+          "q25": 237.60625734897803,
+          "q75": 454.76885021119483,
+          "skewness": 1.5935529750665343,
+          "kurtosis": 1.509980917930796
+        },
+        "relative_differences": {
+          "mean_diff": 0.14811631652058962,
+          "median_diff": 0.08868319498680222,
+          "std_diff": 0.24730797240185698,
+          "skewness_diff": 0.603467122220058,
+          "kurtosis_diff": 1.657130226484452
+        },
+        "range_coverage": 0.8332737247883616,
+        "distribution_similarity": {
+          "kl_divergence": 0.49177512526512146,
+          "histogram_similarity": 0.5867977142333984
+        },
+        "overall_fidelity_score": 0.7445827177978568,
+        "fidelity_interpretation": "Fair fidelity - synthetic data preserves basic statistical properties"
+      },
+      "Low": {
+        "original_statistics": {
+          "count": 87888,
+          "mean": 447.73717925393873,
+          "median": 304.5144426193111,
+          "std": 299.7804339974566,
+          "min": 47.66996744343028,
+          "max": 1241.9486175045586,
+          "q25": 231.06090910542102,
+          "q75": 604.770267224151,
+          "skewness": 0.9814540570608493,
+          "kurtosis": -0.16695707487446132
+        },
+        "synthetic_statistics": {
+          "count": 96048,
+          "mean": 400.31515014776966,
+          "median": 300.2615888154133,
+          "std": 216.5459767003048,
+          "min": 170.8442163803458,
+          "max": 1113.361843254269,
+          "q25": 256.645450959903,
+          "q75": 466.77106000722915,
+          "skewness": 1.5648848116068264,
+          "kurtosis": 1.4247474002671598
+        },
+        "relative_differences": {
+          "mean_diff": 0.10591487886976031,
+          "median_diff": 0.013966016742314395,
+          "std_diff": 0.27765140035075797,
+          "skewness_diff": 0.583430754545977,
+          "kurtosis_diff": 1.5917044751416212
+        },
+        "range_coverage": 0.7891940685916817,
+        "distribution_similarity": {
+          "kl_divergence": 0.4017908573150635,
+          "histogram_similarity": 0.6260536909103394
+        },
+        "overall_fidelity_score": 0.7479932206017029,
+        "fidelity_interpretation": "Fair fidelity - synthetic data preserves basic statistical properties"
+      },
+      "Close": {
+        "original_statistics": {
+          "count": 87888,
+          "mean": 452.07913692735747,
+          "median": 306.44190200359765,
+          "std": 302.3595176966424,
+          "min": 49.68187179833874,
+          "max": 1268.3298994518784,
+          "q25": 233.77699929683928,
+          "q75": 613.124976245483,
+          "skewness": 0.9860000786811052,
+          "kurtosis": -0.15651960802330045
+        },
+        "synthetic_statistics": {
+          "count": 96048,
+          "mean": 403.6362244611671,
+          "median": 303.2524710106811,
+          "std": 220.03657287663842,
+          "min": 164.04271868925844,
+          "max": 1150.5924744381853,
+          "q25": 257.6605477634785,
+          "q75": 472.63517196019814,
+          "skewness": 1.5865160855925564,
+          "kurtosis": 1.5646763739238487
+        },
+        "relative_differences": {
+          "mean_diff": 0.10715582407859364,
+          "median_diff": 0.010407946733338978,
+          "std_diff": 0.2722684089693471,
+          "skewness_diff": 0.6005160069114512,
+          "kurtosis_diff": 1.7211959819471492
+        },
+        "range_coverage": 0.8095444569409355,
+        "distribution_similarity": {
+          "kl_divergence": 0.3739405870437622,
+          "histogram_similarity": 0.6386163234710693
+        },
+        "overall_fidelity_score": 0.7536957087816678,
+        "fidelity_interpretation": "Fair fidelity - synthetic data preserves basic statistical properties"
+      },
+      "Adj_Close": {
+        "original_statistics": {
+          "count": 87888,
+          "mean": 452.07918473662653,
+          "median": 306.4419085015068,
+          "std": 302.3594544633594,
+          "min": 49.92291048243721,
+          "max": 1268.3299436863085,
+          "q25": 233.7770195457139,
+          "q75": 613.1249956388947,
+          "skewness": 0.9860010652477096,
+          "kurtosis": -0.1565193295392615
+        },
+        "synthetic_statistics": {
+          "count": 96048,
+          "mean": 411.0822480843931,
+          "median": 312.694320954809,
+          "std": 217.28186226141605,
+          "min": 185.43911805846992,
+          "max": 1171.9924453815768,
+          "q25": 267.2837814586726,
+          "q75": 477.4413450483743,
+          "skewness": 1.621247778460038,
+          "kurtosis": 1.7168845899302383
+        },
+        "relative_differences": {
+          "mean_diff": 0.09068530035532944,
+          "median_diff": 0.020403255167924957,
+          "std_diff": 0.2813789711088834,
+          "skewness_diff": 0.6352467132123285,
+          "kurtosis_diff": 1.8734039194694998
+        },
+        "range_coverage": 0.809707511888624,
+        "distribution_similarity": {
+          "kl_divergence": 0.42339378595352173,
+          "histogram_similarity": 0.6076036095619202
+        },
+        "overall_fidelity_score": 0.7455246986760333,
+        "fidelity_interpretation": "Fair fidelity - synthetic data preserves basic statistical properties"
+      },
+      "Volume": {
+        "original_statistics": {
+          "count": 87888,
+          "mean": 7366671.453819908,
+          "median": 4674499.417942689,
+          "std": 7986376.494904853,
+          "min": 7900.770162941273,
+          "max": 62482486.47978358,
+          "q25": 1966899.7323492584,
+          "q75": 9732899.34767895,
+          "skewness": 2.6545065459367154,
+          "kurtosis": 10.073770029293541
+        },
+        "synthetic_statistics": {
+          "count": 96048,
+          "mean": 6489331.626279601,
+          "median": 7697286.962803264,
+          "std": 3289408.2148053884,
+          "min": 7520.942753865952,
+          "max": 12903469.545054851,
+          "q25": 3345730.0152141307,
+          "q75": 9185647.181911636,
+          "skewness": -0.59639596889683,
+          "kurtosis": -1.083379631316839
+        },
+        "relative_differences": {
+          "mean_diff": 0.1190958267977829,
+          "median_diff": 0.6466548125469541,
+          "std_diff": 0.5881225713683841,
+          "skewness_diff": 3.2509025148335455,
+          "kurtosis_diff": 11.157149660610381
+        },
+        "range_coverage": 0.20641303385075643,
+        "distribution_similarity": {
+          "kl_divergence": 1.3175370693206787,
+          "histogram_similarity": 0.3401488959789276
+        },
+        "overall_fidelity_score": 0.3678687063327034,
+        "fidelity_interpretation": "Very poor fidelity - synthetic data does not preserve original data characteristics"
+      }
+    }
+  },
+  "utility": {
+    "tstr_accuracy": {
+      "task_type": "regression",
+      "input_columns": [
+        "Open",
+        "Volume",
+        "Low",
+        "High"
+      ],
+      "output_columns": [
+        "Close"
+      ],
+      "training_size": 70320,
+      "test_size": 17568,
+      "total_samples": 87888,
+      "real_data_model": {
+        "rmse": 0.007126200338854698,
+        "mae": 0.0001069337847405743,
+        "r2": 0.9999999994297003
+      },
+      "synthetic_data_model": {
+        "rmse": 27.915334499534673,
+        "mae": 16.354978247674612,
+        "r2": 0.9912486970670286
+      }
+    },
+    "correlation_analysis": {
+      "note": "Correlation analysis requires specific correlation types to be specified"
+    }
+  },
+  "privacy": {
+    "exact_matches": {
+      "exact_match_percentage": 0.0,
+      "risk_level": "low"
+    },
+    "structured_privacy_metrics": {
+      "IMS": {
+        "ims_syn_train": 0.0,
+        "train_test_ims": 1.0,
+        "passed": true,
+        "method": "Identical Match Share (IMS)",
+        "desc": "Synthetic-Train IMS: 0.0000, Train-Test IMS: 1.0000, Passed: Yes"
+      },
+      "DCR": {
+        "syn_train_5pct": 255.71689884983448,
+        "train_train_5pct": 0.0,
+        "passed": true,
+        "method": "Distance to Closest Records (DCR)",
+        "desc": "Synthetic-Train 5%: 255.7169, Train-Train 5%: 0.0000, Passed: Yes"
+      },
+      "NNDR": {
+        "syn_train_5pct": 0.9999999999608997,
+        "train_train_5pct": 0.0,
+        "passed": true,
+        "method": "Nearest Neighbor Distance Ratio (NNDR)",
+        "desc": "Synthetic-Train 5%: 1.0000, Train-Train 5%: 0.0000, Passed: Yes"
+      }
+    }
+  },
+  "diversity": {
+    "tabular_diversity": {
+      "coverage": {
+        "Open": 79.41709918007611,
+        "High": 83.32737247883615,
+        "Low": 78.91940685916818,
+        "Close": 80.95444569409355,
+        "Adj_Close": 80.9707511888624,
+        "Volume": 20.641303385075645
+      },
+      "uniqueness": {
+        "synthetic_duplicate_ratio": 0.0,
+        "original_duplicate_ratio": 93.618013835791,
+        "relative_duplication": 0.0
+      },
+      "numerical_metrics": {
+        "Open": {
+          "statistical_differences": {
+            "mean_diff": 0.09303642345023566,
+            "std_diff": 0.2777136140216094,
+            "skew_diff": 0.5865393797028092,
+            "kurtosis_diff": 1.6248220437927365
+          },
+          "range_coverage": 79.41709918007611,
+          "quartile_coverage": {
+            "q1": 86.5386981948457,
+            "q2": 98.97836836358744,
+            "q3": 77.74467588878954
+          },
+          "distribution_similarity": {
+            "kl_divergence": 0.3833211116443167,
+            "similarity_score": 68.15939963728027
+          },
+          "real_statistics": {
+            "mean": 452.15221280678855,
+            "std": 302.2459377475463,
+            "skew": 0.9848881188295949,
+            "kurtosis": -0.15824675068307759,
+            "min": 49.274527777621856,
+            "max": 1270.9999968876166
+          },
+          "synthetic_statistics": {
+            "mean": 410.0855880721258,
+            "std": 218.30812605229707,
+            "skew": 1.5714274985324042,
+            "kurtosis": 1.466575293109659,
+            "min": 177.2083577338303,
+            "max": 1147.467285245165
+          }
+        },
+        "High": {
+          "statistical_differences": {
+            "mean_diff": 0.14811631652055715,
+            "std_diff": 0.24730797240177582,
+            "skew_diff": 0.603467122220058,
+            "kurtosis_diff": 1.657130226484452
+          },
+          "range_coverage": 83.32737247883615,
+          "quartile_coverage": {
+            "q1": 99.16659259155244,
+            "q2": 91.13168050132265,
+            "q3": 72.81369548447856
+          },
+          "distribution_similarity": {
+            "kl_divergence": 0.49177510441278327,
+            "similarity_score": 61.153988298941954
+          },
+          "real_statistics": {
+            "mean": 456.2560998464088,
+            "std": 304.67942760910233,
+            "skew": 0.9900858528464762,
+            "kurtosis": -0.14714930855365616,
+            "min": 50.5412848544881,
+            "max": 1273.8899853543353
+          },
+          "synthetic_statistics": {
+            "mean": 388.6771269471084,
+            "std": 229.32977613453687,
+            "skew": 1.5935529750665343,
+            "kurtosis": 1.509980917930796,
+            "min": 160.39858814127265,
+            "max": 1179.782916521782
+          }
+        },
+        "Low": {
+          "statistical_differences": {
+            "mean_diff": 0.10591487886973665,
+            "std_diff": 0.2776514003506654,
+            "skew_diff": 0.583430754545977,
+            "kurtosis_diff": 1.5917044751416212
+          },
+          "range_coverage": 78.91940685916818,
+          "quartile_coverage": {
+            "q1": 88.9273603425502,
+            "q2": 98.60339832576902,
+            "q3": 77.18154897887015
+          },
+          "distribution_similarity": {
+            "kl_divergence": 0.4017908519634002,
+            "similarity_score": 66.91206763324303
+          },
+          "real_statistics": {
+            "mean": 447.73717925393873,
+            "std": 299.7804339974566,
+            "skew": 0.9814540570608493,
+            "kurtosis": -0.16695707487446132,
+            "min": 47.66996744343028,
+            "max": 1241.9486175045586
+          },
+          "synthetic_statistics": {
+            "mean": 400.31515014776966,
+            "std": 216.5459767003048,
+            "skew": 1.5648848116068264,
+            "kurtosis": 1.4247474002671598,
+            "min": 170.8442163803458,
+            "max": 1113.361843254269
+          }
+        },
+        "Close": {
+          "statistical_differences": {
+            "mean_diff": 0.10715582407856994,
+            "std_diff": 0.2722684089692571,
+            "skew_diff": 0.6005160069114512,
+            "kurtosis_diff": 1.7211959819471492
+          },
+          "range_coverage": 80.95444569409355,
+          "quartile_coverage": {
+            "q1": 89.78361920186049,
+            "q2": 98.95920532666645,
+            "q3": 77.0862695652097
+          },
+          "distribution_similarity": {
+            "kl_divergence": 0.3739406068700768,
+            "similarity_score": 68.80177741445462
+          },
+          "real_statistics": {
+            "mean": 452.07913692735747,
+            "std": 302.3595176966424,
+            "skew": 0.9860000786811052,
+            "kurtosis": -0.15651960802330045,
+            "min": 49.68187179833874,
+            "max": 1268.3298994518784
+          },
+          "synthetic_statistics": {
+            "mean": 403.6362244611671,
+            "std": 220.03657287663842,
+            "skew": 1.5865160855925564,
+            "kurtosis": 1.5646763739238487,
+            "min": 164.04271868925844,
+            "max": 1150.5924744381853
+          }
+        },
+        "Adj_Close": {
+          "statistical_differences": {
+            "mean_diff": 0.09068530035530939,
+            "std_diff": 0.2813789711087903,
+            "skew_diff": 0.6352467132123285,
+            "kurtosis_diff": 1.8734039194694998
+          },
+          "range_coverage": 80.9707511888624,
+          "quartile_coverage": {
+            "q1": 85.66721315120868,
+            "q2": 97.95967448320818,
+            "q3": 77.87014857400948
+          },
+          "distribution_similarity": {
+            "kl_divergence": 0.42339380948876737,
+            "similarity_score": 65.48207077202647
+          },
+          "real_statistics": {
+            "mean": 452.07918473662653,
+            "std": 302.3594544633594,
+            "skew": 0.9860010652477096,
+            "kurtosis": -0.1565193295392615,
+            "min": 49.92291048243721,
+            "max": 1268.3299436863085
+          },
+          "synthetic_statistics": {
+            "mean": 411.0822480843931,
+            "std": 217.28186226141605,
+            "skew": 1.621247778460038,
+            "kurtosis": 1.7168845899302383,
+            "min": 185.43911805846992,
+            "max": 1171.9924453815768
+          }
+        },
+        "Volume": {
+          "statistical_differences": {
+            "mean_diff": 0.1190958267977829,
+            "std_diff": 0.5881225713683841,
+            "skew_diff": 3.2509025148335455,
+            "kurtosis_diff": 11.157149660610381
+          },
+          "range_coverage": 20.641303385075645,
+          "quartile_coverage": {
+            "q1": 29.898293228297813,
+            "q2": 35.334518745304585,
+            "q3": 94.37729553940348
+          },
+          "distribution_similarity": {
+            "kl_divergence": 1.3172733161207104,
+            "similarity_score": 26.786468943993906
+          },
+          "real_statistics": {
+            "mean": 7366671.453819908,
+            "std": 7986376.494904853,
+            "skew": 2.6545065459367154,
+            "kurtosis": 10.073770029293541,
+            "min": 7900.770162941273,
+            "max": 62482486.47978358
+          },
+          "synthetic_statistics": {
+            "mean": 6489331.626279601,
+            "std": 3289408.2148053884,
+            "skew": -0.59639596889683,
+            "kurtosis": -1.083379631316839,
+            "min": 7520.942753865952,
+            "max": 12903469.545054851
+          }
+        }
+      },
+      "categorical_metrics": {},
+      "entropy_metrics": {
+        "column_entropy": {
+          "Open": {
+            "real": 5.025767036753601,
+            "synthetic": 4.610088231284322,
+            "entropy_ratio": 0.9172904747631285,
+            "entropy_difference": 0.4156788054692795
+          },
+          "High": {
+            "real": 5.016148319676379,
+            "synthetic": 4.541976981761546,
+            "entropy_ratio": 0.9054710292067337,
+            "entropy_difference": 0.4741713379148331
+          },
+          "Low": {
+            "real": 5.044302796313942,
+            "synthetic": 4.617222917964358,
+            "entropy_ratio": 0.9153342105566699,
+            "entropy_difference": 0.42707987834958416
+          },
+          "Close": {
+            "real": 5.023915750042311,
+            "synthetic": 4.61101495075597,
+            "entropy_ratio": 0.9178129530984582,
+            "entropy_difference": 0.4129007992863407
+          },
+          "Adj_Close": {
+            "real": 5.0243448638958705,
+            "synthetic": 4.584098915515956,
+            "entropy_ratio": 0.9123774421547597,
+            "entropy_difference": 0.44024594837991415
+          },
+          "Volume": {
+            "real": 3.8979319149973803,
+            "synthetic": 5.215246682711496,
+            "entropy_ratio": 1.3379522260283516,
+            "entropy_difference": 1.3173147677141155
+          }
+        },
+        "dataset_entropy": {
+          "real": 4.838735113613247,
+          "synthetic": 4.696608113332274,
+          "entropy_ratio": 0.9706272409956526
+        }
+      }
+    }
+  },
+  "mia": {
+    "auc": 0.5795988981456599,
+    "accuracy": 0.5478142076502732,
+    "balanced_accuracy": 0.5478142076502732,
+    "precision": 0.54375,
+    "recall": 0.5942622950819673,
+    "f1": 0.5678851174934726,
+    "ci_95_lower": 0.5286536593463076,
+    "ci_95_upper": 0.6305441369450122,
+    "cv_auc_mean": 0.483739786025125,
+    "cv_auc_std": 0.025992468775179765,
+    "train_loss_mean": 8196927.0,
+    "train_loss_std": 10328294.0,
+    "test_loss_mean": 7884209.5,
+    "test_loss_std": 10254425.0,
+    "n_train": 732,
+    "n_test": 732,
+    "shadow_samples": 1464,
+    "model_path": "/home/azureuser/dave/SynEval/experiments/data/OUTPUT_GRID_WINDOW_DP_EXTREMA_LONG/dp_eps100/stocks/checkpoints/checkpoint-10.pt",
+    "attack_mode": "adapter_model",
+    "collapse_detected": false,
+    "collapse_reason": null,
+    "majority_baseline_accuracy": 0.5,
+    "attack_reliability": "high",
+    "model_loaded": true,
+    "fallback_used": false,
+    "gradients_used": true,
+    "privacy_risk_level": "medium",
+    "status": "success"
+  }
+}

@@ -1,0 +1,90 @@
+# configs/cross_group_dp_adult.yaml
+# Differential Privacy evaluation configuration for the Adult Income dataset.
+
+experiment_groups:
+  ADULT_BENCHMARK_BASE:
+    display_name: "Adult Income Benchmark (Base)"
+    experiments:
+      - epsilon: "1.0"
+        delta: "1e-5"
+        synthetic_path: "experiments/data_adult/adult/adult_benchmark_dp_eps1.0_delta1e-05/8000/samples.csv"
+      - epsilon: "10.0"
+        delta: "1e-5"
+        synthetic_path: "experiments/data_adult/adult/adult_benchmark_dp_eps10.0_delta1e-05/8000/samples.csv"
+      - epsilon: "100.0"
+        delta: "1e-5"
+        synthetic_path: "experiments/data_adult/adult/adult_benchmark_dp_eps100.0_delta1e-05/8000/samples.csv"
+
+  ADULT_BENCHMARK_EMA:
+    display_name: "Adult Income Benchmark (EMA)"
+    experiments:
+      - epsilon: "1.0"
+        delta: "1e-5"
+        synthetic_path: "experiments/data_adult/adult/adult_benchmark_dp_eps1.0_delta1e-05/8000/ema/samples.csv"
+      - epsilon: "10.0"
+        delta: "1e-5"
+        synthetic_path: "experiments/data_adult/adult/adult_benchmark_dp_eps10.0_delta1e-05/8000/ema/samples.csv"
+      - epsilon: "100.0"
+        delta: "1e-5"
+        synthetic_path: "experiments/data_adult/adult/adult_benchmark_dp_eps100.0_delta1e-05/8000/ema/samples.csv"
+
+real_data:
+  train_path: "experiments/data_adult/adult/train.csv"
+  test_path: "experiments/data_adult/adult/test.csv"
+
+metadata:
+  info_json_path: "experiments/data_adult/adult/info.json"
+
+syneval_experiments:
+  fidelity:
+    enabled: true
+  utility:
+    enabled: true
+  privacy:
+    enabled: true
+  diversity:
+    enabled: true
+  mia:
+    enabled: true
+mia:
+  enabled: true
+  adapter: tabdiff
+  dataset: adult
+  n_shadow: 1000
+
+utility:
+  target_column: "income"
+  input_columns:
+    - "age"
+    - "fnlwgt"
+    - "education.num"
+    - "capital.gain"
+    - "capital.loss"
+    - "hours.per.week"
+
+privacy:
+  skip_anonymeter: true
+
+reporting:
+  individual_reports: true
+  in_group_comparisons: true
+  cross_group_comparisons: true
+  reports_output_dir: "reports/dp_evaluation_adult"
+  formats:
+    - "html"
+    - "json"
+
+execution:
+  parallel_workers: 4
+  device: "auto"
+  enable_cache: true
+  cache_dir: "./cache"
+  openblas_threads: 32
+  log_level: "INFO"
+  log_file: "dp_evaluation_adult.log"
+  continue_on_error: true
+  save_intermediate: true
+
+validation:
+  check_files_exist: true
+  validate_schema: true

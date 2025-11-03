@@ -433,15 +433,18 @@ def display_results_summary(results: Dict):
         
         elif dimension == 'privacy':
             if 'membership_inference' in dimension_results:
-                mia = dimension_results['membership_inference']
-                print(f"成员推理风险: {mia.get('risk_level', 'N/A')}")
-                
-                mia_auc = mia.get('mia_auc_score', None)
-                if isinstance(mia_auc, (int, float)):
-                    print(f"MIA AUC 评分: {mia_auc:.3f}")
+                distinguishability = dimension_results['membership_inference']
+                auc_value = distinguishability.get('distinguishability_auc', None)
+                fidelity_score = distinguishability.get('fidelity_score', None)
+
+                if isinstance(auc_value, (int, float)):
+                    print(f"合成-真实可区分度 AUC: {auc_value:.3f}")
                 else:
-                    print(f"MIA AUC 评分: {mia_auc if mia_auc is not None else 'N/A'}")
-            
+                    print("合成-真实可区分度 AUC: N/A")
+
+                if isinstance(fidelity_score, (int, float)):
+                    print(f"AUC 推导的相似度得分(1-AUC): {fidelity_score:.3f}")
+
             if 'exact_matches' in dimension_results:
                 exact = dimension_results['exact_matches']
                 print(f"精确匹配风险: {exact.get('risk_level', 'N/A')}")

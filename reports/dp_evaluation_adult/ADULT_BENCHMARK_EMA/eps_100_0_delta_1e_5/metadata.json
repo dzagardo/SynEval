@@ -1,0 +1,173 @@
+{
+  "columns": {
+    "age": {
+      "sdtype": "numerical"
+    },
+    "workclass": {
+      "sdtype": "categorical",
+      "categories": [
+        "Without-pay",
+        "Local-gov",
+        "Self-emp-not-inc",
+        "Never-worked",
+        "State-gov",
+        "Self-emp-inc",
+        "?",
+        "Federal-gov",
+        "Private"
+      ]
+    },
+    "fnlwgt": {
+      "sdtype": "numerical"
+    },
+    "education": {
+      "sdtype": "categorical",
+      "categories": [
+        "Bachelors",
+        "Masters",
+        "Some-college",
+        "9th",
+        "1st-4th",
+        "Preschool",
+        "11th",
+        "Assoc-voc",
+        "10th",
+        "Doctorate",
+        "12th",
+        "7th-8th",
+        "Prof-school",
+        "Assoc-acdm",
+        "5th-6th",
+        "HS-grad"
+      ]
+    },
+    "education.num": {
+      "sdtype": "numerical"
+    },
+    "marital.status": {
+      "sdtype": "categorical",
+      "categories": [
+        "Married-AF-spouse",
+        "Divorced",
+        "Married-civ-spouse",
+        "Married-spouse-absent",
+        "Never-married",
+        "Widowed",
+        "Separated"
+      ]
+    },
+    "occupation": {
+      "sdtype": "categorical",
+      "categories": [
+        "Farming-fishing",
+        "Exec-managerial",
+        "Handlers-cleaners",
+        "Other-service",
+        "Armed-Forces",
+        "Craft-repair",
+        "Sales",
+        "Priv-house-serv",
+        "Protective-serv",
+        "?",
+        "Prof-specialty",
+        "Adm-clerical",
+        "Tech-support",
+        "Machine-op-inspct",
+        "Transport-moving"
+      ]
+    },
+    "relationship": {
+      "sdtype": "categorical",
+      "categories": [
+        "Wife",
+        "Unmarried",
+        "Other-relative",
+        "Own-child",
+        "Not-in-family",
+        "Husband"
+      ]
+    },
+    "race": {
+      "sdtype": "categorical",
+      "categories": [
+        "Asian-Pac-Islander",
+        "Black",
+        "White",
+        "Other",
+        "Amer-Indian-Eskimo"
+      ]
+    },
+    "sex": {
+      "sdtype": "categorical",
+      "categories": [
+        "Female",
+        "Male"
+      ]
+    },
+    "capital.gain": {
+      "sdtype": "numerical"
+    },
+    "capital.loss": {
+      "sdtype": "numerical"
+    },
+    "hours.per.week": {
+      "sdtype": "numerical"
+    },
+    "native.country": {
+      "sdtype": "categorical",
+      "categories": [
+        "Honduras",
+        "Puerto-Rico",
+        "India",
+        "Cuba",
+        "Italy",
+        "South",
+        "Haiti",
+        "Dominican-Republic",
+        "Columbia",
+        "Yugoslavia",
+        "Hong",
+        "Poland",
+        "Mexico",
+        "Nicaragua",
+        "?",
+        "Taiwan",
+        "China",
+        "Outlying-US(Guam-USVI-etc)",
+        "Vietnam",
+        "Ecuador",
+        "Hungary",
+        "Ireland",
+        "Guatemala",
+        "England",
+        "Japan",
+        "Cambodia",
+        "Philippines",
+        "Trinadad&Tobago",
+        "Germany",
+        "Greece",
+        "Iran",
+        "Canada",
+        "Laos",
+        "Jamaica",
+        "El-Salvador",
+        "Thailand",
+        "Portugal",
+        "France",
+        "Scotland",
+        "United-States",
+        "Holand-Netherlands",
+        "Peru"
+      ]
+    },
+    "income": {
+      "sdtype": "categorical",
+      "categories": [
+        "<=50K",
+        ">50K"
+      ]
+    }
+  },
+  "primary_key": null,
+  "METADATA_SPEC_VERSION": "1.0"
+}
